@@ -1,678 +1,601 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N9HO • Justin's Ham Radio Adventures</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N9HO</title>
+<meta name="description" content="Justin Rogers, N9HO. CW and portable operating from Alabama. Builds Another Morse Trainer, Carrier Wave, and a 2 m CW skimmer node for the Reverse Beacon Network.">
+<meta property="og:title" content="N9HO">
+<meta property="og:description" content="Justin Rogers, N9HO. CW and portable operating from Alabama. Builds Another Morse Trainer, Carrier Wave, and a 2 m CW skimmer node for the Reverse Beacon Network.">
+<meta property="og:url" content="https://www.n9ho.com/">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23101418'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial Narrow,Arial' font-weight='700' font-size='30' fill='%23d9a441'%3EN9%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://www.n9ho.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
 :root {
-    --bg-dark: #1a1a2e;
-    --bg-card: #16213e;
-    --bg-lighter: #1f2b47;
-    --text-light: #eaeaea;
-    --text-muted: #a0a0a0;
-    --accent: #e6a919;
-    --accent-hover: #f0bd4d;
-    --border: #2a3a5a;
+  --ink: #101418;
+  --panel: #171d24;
+  --panel-2: #1d252e;
+  --line: #2a333d;
+  --line-strong: #3a4552;
+  --text: #e7e2d6;
+  --muted: #9aa3ad;
+  --brass: #d9a441;
+  --brass-deep: #b07f24;
+  --brass-ink: #1a1408;
+  --brass-soft: rgba(217,164,65,0.12);
+  --ok: #5fbf8a;
+  --shadow: 0 18px 40px rgba(0,0,0,0.35);
+  --display: 'Barlow Condensed', 'Arial Narrow', Impact, sans-serif;
+  --body: 'Source Sans 3', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --ink: #f3efe6;
+    --panel: #ffffff;
+    --panel-2: #faf7f0;
+    --line: #ddd6c8;
+    --line-strong: #c4bba9;
+    --text: #1b1f24;
+    --muted: #5d6670;
+    --brass: #a8731c;
+    --brass-deep: #7f5612;
+    --brass-ink: #fffaf0;
+    --brass-soft: rgba(168,115,28,0.10);
+    --ok: #2e8b5d;
+    --shadow: 0 18px 40px rgba(60,40,10,0.10);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --ink: #f3efe6;
+  --panel: #ffffff;
+  --panel-2: #faf7f0;
+  --line: #ddd6c8;
+  --line-strong: #c4bba9;
+  --text: #1b1f24;
+  --muted: #5d6670;
+  --brass: #a8731c;
+  --brass-deep: #7f5612;
+  --brass-ink: #fffaf0;
+  --brass-soft: rgba(168,115,28,0.10);
+  --ok: #2e8b5d;
+  --shadow: 0 18px 40px rgba(60,40,10,0.10);
+  color-scheme: light;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body {
-    font-family: 'Open Sans', sans-serif;
-    font-size: 16px;
-    line-height: 1.7;
-    color: var(--text-light);
-    background: var(--bg-dark);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--brass); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; border-radius: 3px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.05; text-wrap: balance; font-weight: 600; }
+p { max-width: 62ch; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+.mono { font-family: var(--mono); }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brass);
 }
 
-a {
-    color: var(--accent);
-    text-decoration: none;
-}
-
-a:hover {
-    color: var(--accent-hover);
-}
-
-h1, h2, h3, h4 {
-    font-family: 'Roboto Slab', serif;
-    font-weight: 600;
-    line-height: 1.3;
-}
-
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Navigation */
-.nav {
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border);
-    padding: 0 20px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.nav-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
-}
-
-.nav-logo {
-    font-family: 'Roboto Slab', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--accent);
-}
-
-.nav-links {
-    display: flex;
-    gap: 24px;
-    list-style: none;
-}
-
-.nav-links a {
-    color: var(--text-light);
-    font-size: 0.95rem;
-}
-
-.nav-links a:hover,
-.nav-links a.active {
-    color: var(--accent);
-}
-
-.nav-links .yt-link {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #ff4444;
-}
-
-.mobile-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--text-light);
-    font-size: 1.5rem;
-    cursor: pointer;
-}
+/* Nav */
+.nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--ink) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav-inner { max-width: 1040px; margin: 0 auto; padding: 0 24px; height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { font-family: var(--display); font-weight: 700; font-size: 1.5rem; letter-spacing: 0.06em; color: var(--text); display: flex; align-items: center; gap: 10px; }
+.brand:hover { text-decoration: none; }
+.brand svg { width: 22px; height: 22px; }
+.nav-links { display: flex; gap: 26px; list-style: none; align-items: center; }
+.nav-links a { color: var(--muted); font-size: 0.95rem; font-weight: 600; }
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+.nav-links a.yt { color: var(--text); display: inline-flex; align-items: center; gap: 6px; }
+.nav-links a.yt svg { width: 18px; height: 18px; fill: #e53935; }
+.menu-btn { display: none; background: none; border: 1px solid var(--line); color: var(--text); font: inherit; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
 
 /* Hero */
-.hero {
-    padding: 80px 20px;
-    text-align: center;
-    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-dark) 100%);
-    border-bottom: 1px solid var(--border);
+.hero { padding: 72px 0 56px; border-bottom: 1px solid var(--line); background:
+  radial-gradient(ellipse 60% 50% at 80% 0%, var(--brass-soft), transparent 70%); }
+.hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: end; }
+.callsign { font-family: var(--display); font-weight: 700; font-size: clamp(5rem, 14vw, 9.5rem); line-height: 0.9; letter-spacing: 0.02em; color: var(--text); margin: 8px 0 18px; }
+.callsign span { color: var(--brass); }
+.morse-line { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 26px; }
+.morse-bar { display: flex; align-items: center; height: 14px; }
+.morse-bar i { display: block; height: 10px; background: var(--line-strong); border-radius: 2px; transition: background 80ms linear, box-shadow 80ms linear; }
+.morse-bar i.dit { width: 10px; }
+.morse-bar i.dah { width: 30px; }
+.morse-bar i.gap { width: 10px; background: transparent; height: 0; }
+.morse-bar i.gap-char { width: 30px; background: transparent; height: 0; }
+.morse-bar i.on { background: var(--brass); box-shadow: 0 0 10px var(--brass); }
+.play {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text); background: transparent; border: 1px solid var(--line-strong);
+  padding: 7px 12px 7px 10px; border-radius: 999px; cursor: pointer;
 }
+.play:hover { border-color: var(--brass); color: var(--brass); }
+.play svg { width: 12px; height: 12px; fill: currentColor; }
+.lede { font-size: 1.25rem; color: var(--text); max-width: 46ch; }
+.lede strong { font-weight: 600; }
+.sub { color: var(--muted); margin-top: 12px; max-width: 52ch; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 6px; font-weight: 600; font-size: 0.95rem; border: 1px solid transparent; }
+.btn:hover { text-decoration: none; }
+.btn-brass { background: var(--brass); color: var(--brass-ink); }
+.btn-brass:hover { background: var(--brass-deep); color: #fff; }
+.btn-ghost { border-color: var(--line-strong); color: var(--text); }
+.btn-ghost:hover { border-color: var(--brass); color: var(--brass); }
 
-.hero h1 {
-    font-size: 3.5rem;
-    color: var(--accent);
-    margin-bottom: 16px;
-}
-
-.hero p {
-    font-size: 1.2rem;
-    color: var(--text-muted);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.hero-badges {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    margin-top: 32px;
-    flex-wrap: wrap;
-}
-
-.badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-muted);
-    font-size: 0.95rem;
-}
-
-.badge-icon {
-    font-size: 1.3rem;
-}
+/* Station plate */
+.plate { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px; box-shadow: var(--shadow); font-family: var(--mono); font-size: 0.85rem; position: relative; }
+.plate::before { content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px; background: var(--brass); border-radius: 0 2px 2px 0; }
+.plate h3 { font-family: var(--mono); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.plate dl { display: grid; grid-template-columns: auto 1fr; column-gap: 20px; row-gap: 9px; }
+.plate dt { color: var(--muted); }
+.plate dd { color: var(--text); text-align: right; }
+.plate dd a { color: var(--brass); }
+.plate .note { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); color: var(--muted); font-size: 0.78rem; line-height: 1.5; }
 
 /* Sections */
-section {
-    padding: 60px 20px;
-}
+section { padding: 64px 0; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: none; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+.sec-head h2 { font-size: 2.4rem; letter-spacing: 0.01em; }
+.sec-head p { color: var(--muted); max-width: 52ch; }
 
-section:nth-child(even) {
-    background: var(--bg-card);
-}
+/* Projects */
+.projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.proj { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 14px; transition: border-color 150ms, transform 150ms; }
+.proj:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+.proj-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.proj-top .glyph { font-family: var(--mono); color: var(--brass); font-size: 0.95rem; letter-spacing: 0.1em; }
+.pill { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--muted); white-space: nowrap; }
+.pill.live { border-color: var(--ok); color: var(--ok); }
+.pill.brass { border-color: var(--brass); color: var(--brass); }
+.proj h3 { font-size: 1.7rem; }
+.proj p { color: var(--muted); font-size: 0.98rem; }
+.proj ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.92rem; margin-top: auto; padding-top: 6px; }
+.proj ul a { font-weight: 600; }
+.bench { margin-top: 28px; border-top: 1px solid var(--line); }
+.bench-row { display: grid; grid-template-columns: 220px 1fr auto; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.bench-row .name { font-family: var(--display); font-size: 1.3rem; font-weight: 600; }
+.bench-row .what { color: var(--muted); font-size: 0.98rem; }
+.bench-row .go { font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+.with { display: inline-block; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+.with a { color: var(--text); }
 
-.section-title {
-    font-size: 1.75rem;
-    margin-bottom: 32px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--accent);
-    display: inline-block;
-}
+/* Brass Knuckle Gang */
+.bkg { margin-top: 44px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 28px; }
+.bkg h3 { font-size: 1.9rem; margin-bottom: 6px; }
+.bkg .tag { display: inline-flex; gap: 8px; align-items: center; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brass); margin-bottom: 14px; }
+.bkg p { color: var(--muted); }
+.bkg p + p { margin-top: 12px; }
+.bkg p strong { color: var(--text); }
+.bylaws { list-style: none; display: grid; gap: 10px; font-size: 0.95rem; }
+.bylaws li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; padding: 12px 14px; background: var(--ink); border: 1px solid var(--line); border-radius: 6px; }
+.bylaws .n { font-family: var(--display); font-weight: 700; font-size: 1.3rem; color: var(--brass); line-height: 1; }
+.bylaws b { display: block; font-weight: 600; }
+.bylaws span { color: var(--muted); font-size: 0.9rem; }
+.bkg-links { margin-top: 16px; display: flex; gap: 14px; flex-wrap: wrap; font-weight: 600; font-size: 0.92rem; }
 
-/* About */
-.about-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 40px;
-    align-items: start;
-}
+/* On the air */
+.air { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: start; }
+.air p + p { margin-top: 14px; }
+.air p { color: var(--muted); }
+.air p strong { color: var(--text); font-weight: 600; }
+.find { list-style: none; display: grid; gap: 10px; }
+.find li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; padding: 12px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+.find .k { font-family: var(--mono); font-size: 0.72rem; color: var(--brass); letter-spacing: 0.1em; padding-top: 5px; }
+.find b { display: block; font-weight: 600; }
+.find span { color: var(--muted); font-size: 0.92rem; }
 
-.about-text p {
-    margin-bottom: 16px;
-    color: var(--text-muted);
-}
+/* Learn CW */
+.cw { display: grid; grid-template-columns: 1fr 1.25fr; gap: 48px; align-items: start; }
+.cw p { color: var(--muted); }
+.cw p + p { margin-top: 14px; }
+.cw-ctl { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin: 18px 0 8px; font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.cw-ctl label { display: inline-flex; align-items: center; gap: 8px; }
+.cw-ctl input[type=range] { accent-color: var(--brass); width: 120px; }
+.chart { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.key { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px 6px 8px; text-align: center; cursor: pointer; color: var(--text); font: inherit; transition: border-color 120ms, background 120ms; }
+.key:hover { border-color: var(--brass); }
+.key.on { background: var(--brass-soft); border-color: var(--brass); }
+.key .c { font-family: var(--display); font-size: 1.5rem; font-weight: 600; line-height: 1; }
+.key .m { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.12em; margin-top: 4px; }
+.chart-note { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); margin-top: 12px; }
 
-.about-text p strong {
-    color: var(--text-light);
-}
-
-.station-card {
-    background: var(--bg-lighter);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-}
-
-.station-card h3 {
-    margin-bottom: 16px;
-    color: var(--accent);
-    font-size: 1.1rem;
-}
-
-.station-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.95rem;
-}
-
-.station-row:last-child {
-    border-bottom: none;
-}
-
-.station-label {
-    color: var(--text-muted);
-}
-
-.station-value {
-    color: var(--accent);
-    font-weight: 600;
-}
-
-/* Articles */
-.articles-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 24px;
-}
-
-.article-card {
-    background: var(--bg-lighter);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    transition: border-color 0.2s;
-}
-
-.article-card:hover {
-    border-color: var(--accent);
-}
-
-.article-meta {
-    display: flex;
-    gap: 16px;
-    font-size: 0.85rem;
-    margin-bottom: 12px;
-}
-
-.article-cat {
-    color: var(--accent);
-    font-weight: 600;
-}
-
-.article-date {
-    color: var(--text-muted);
-}
-
-.article-card h3 {
-    font-size: 1.15rem;
-    margin-bottom: 12px;
-}
-
-.article-card h3 a {
-    color: var(--text-light);
-}
-
-.article-card h3 a:hover {
-    color: var(--accent);
-}
-
-.article-card p {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-}
-
-.view-all {
-    display: inline-block;
-    margin-top: 24px;
-    font-weight: 600;
-}
-
-/* Quick Links */
-.links-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-}
-
-.link-card {
-    display: block;
-    background: var(--bg-lighter);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-    transition: border-color 0.2s;
-}
-
-.link-card:hover {
-    border-color: var(--accent);
-}
-
-.link-icon {
-    font-size: 2rem;
-    margin-bottom: 8px;
-}
-
-.link-card h4 {
-    color: var(--text-light);
-    font-size: 1rem;
-    margin-bottom: 4px;
-}
-
-.link-card p {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-}
-
-/* CW Section */
-.cw-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: center;
-}
-
-.cw-text p {
-    color: var(--text-muted);
-    margin-bottom: 16px;
-}
-
-.btn {
-    display: inline-block;
-    padding: 12px 24px;
-    background: var(--accent);
-    color: var(--bg-dark);
-    font-weight: 600;
-    border-radius: 4px;
-    margin-top: 8px;
-    transition: background 0.2s;
-}
-
-.btn:hover {
-    background: var(--accent-hover);
-    color: var(--bg-dark);
-}
-
-.morse-cards {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.morse-card {
-    width: 70px;
-    padding: 16px 8px;
-    background: var(--bg-lighter);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    text-align: center;
-}
-
-.morse-char {
-    font-family: 'Roboto Slab', serif;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--accent);
-}
-
-.morse-code {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-top: 4px;
-    letter-spacing: 2px;
-}
+/* Watch */
+.watch { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.card-link { display: flex; align-items: center; gap: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px; color: var(--text); transition: border-color 150ms; }
+.card-link:hover { border-color: var(--brass); text-decoration: none; }
+.card-link .ico { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; flex-shrink: 0; background: var(--brass-soft); }
+.card-link .ico svg { width: 24px; height: 24px; }
+.card-link b { display: block; font-family: var(--display); font-size: 1.4rem; font-weight: 600; }
+.card-link span { color: var(--muted); font-size: 0.95rem; }
 
 /* Footer */
-.footer {
-    background: var(--bg-card);
-    border-top: 1px solid var(--border);
-    padding: 40px 20px;
-}
+footer { border-top: 1px solid var(--line); padding: 40px 0 48px; color: var(--muted); font-size: 0.95rem; }
+.foot { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; }
+.foot h4 { font-family: var(--mono); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.foot ul { list-style: none; display: grid; gap: 7px; }
+.foot a { color: var(--text); }
+.foot .sk { font-family: var(--mono); color: var(--brass); letter-spacing: 0.15em; margin-top: 8px; }
+.foot-bottom { margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 0.85rem; }
 
-.footer-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 40px;
+@media (max-width: 860px) {
+  .hero-grid, .air, .cw, .watch, .bkg { grid-template-columns: 1fr; }
+  .projects { grid-template-columns: 1fr; }
+  .bench-row { grid-template-columns: 1fr; gap: 4px; }
+  .foot { grid-template-columns: 1fr 1fr; }
+  .chart { grid-template-columns: repeat(6, 1fr); }
 }
-
-.footer-brand p {
-    color: var(--text-muted);
-    margin-top: 12px;
-    font-size: 0.95rem;
+@media (max-width: 640px) {
+  .nav-links { display: none; position: absolute; top: 58px; left: 0; right: 0; flex-direction: column; align-items: flex-start; gap: 0; background: var(--panel); border-bottom: 1px solid var(--line); padding: 8px 24px; }
+  .nav-links li { width: 100%; }
+  .nav-links a { display: block; padding: 12px 0; }
+  .nav-links.open { display: flex; }
+  .menu-btn { display: block; }
+  .hero { padding: 48px 0 40px; }
+  .sec-head h2 { font-size: 2rem; }
+  .chart { grid-template-columns: repeat(4, 1fr); }
+  .foot { grid-template-columns: 1fr; }
 }
-
-.footer h4 {
-    font-size: 0.9rem;
-    color: var(--text-light);
-    margin-bottom: 16px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.footer ul {
-    list-style: none;
-}
-
-.footer li {
-    margin-bottom: 8px;
-}
-
-.footer a {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-}
-
-.footer a:hover {
-    color: var(--accent);
-}
-
-.footer-bottom {
-    max-width: 1100px;
-    margin: 32px auto 0;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        right: 0;
-        flex-direction: column;
-        background: var(--bg-card);
-        padding: 16px;
-        gap: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-    
-    .nav-links.open {
-        display: flex;
-    }
-    
-    .mobile-toggle {
-        display: block;
-    }
-    
-    .hero h1 {
-        font-size: 2.5rem;
-    }
-    
-    .about-grid,
-    .cw-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .footer-inner {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-    </style>
+</style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-inner">
-            <a href="#" class="nav-logo">N9HO</a>
-            <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
-            <ul class="nav-links">
-                <li><a href="#" class="active">Home</a></li>
-                <li><a href="#articles">Articles</a></li>
-                <li><a href="#equipment">Equipment</a></li>
-                <li><a href="#learn-cw">Learn CW</a></li>
-                <li><a href="https://www.youtube.com/@JustinN9HO" target="_blank" class="yt-link">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                    YouTube
-                </a></li>
-            </ul>
-        </div>
-    </nav>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand" aria-label="N9HO home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v9"/><path d="M8 7l4-4 4 4"/><path d="M12 12l-6 9"/><path d="M12 12l6 9"/><path d="M6 21h12"/></svg>
+      N9HO
+    </a>
+    <button class="menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">Menu</button>
+    <ul class="nav-links">
+      <li><a href="#building">Projects</a></li>
+      <li><a href="#air">On the air</a></li>
+      <li><a href="#cw">Learn CW</a></li>
+      <li><a href="#watch">Watch</a></li>
+      <li><a class="yt" href="https://www.youtube.com/@JustinN9HO" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4L15.8 12l-6.3 3.6z"/></svg>YouTube</a></li>
+    </ul>
+  </div>
+</nav>
 
-    <!-- Hero -->
-    <header class="hero">
-        <div class="container">
-            <h1>N9HO</h1>
-            <p>Amateur radio adventures in portable ops, CW, and experimentation</p>
-            <div class="hero-badges">
-                <div class="badge"><span class="badge-icon">📻</span> QRP Enthusiast</div>
-                <div class="badge"><span class="badge-icon">⚡</span> CW Operator</div>
-                <div class="badge"><span class="badge-icon">🏕️</span> POTA Activator</div>
-            </div>
-        </div>
-    </header>
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Justin Rogers &middot; Amateur Extra &middot; Alabama</div>
+      <h1 class="callsign">N9<span>HO</span></h1>
+      <div class="morse-line">
+        <div class="morse-bar" id="callBar" aria-hidden="true"></div>
+        <button class="play" id="playCall" type="button" aria-label="Play N9HO in Morse code">
+          <svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg> Hear it
+        </button>
+      </div>
+      <p class="lede">CW from the field, and software for the people who work it too.</p>
+      <p class="sub">I activate parks with a radio and a key, and I build the tools I wished existed while learning code: a free Morse trainer, a field logger, and a cheap 2&nbsp;m skimmer so VHF CW finally shows up on the Reverse Beacon Network.</p>
+      <div class="hero-actions">
+        <a class="btn btn-brass" href="https://anothermorsetrainer.app" target="_blank" rel="noopener">Learn Morse with my app</a>
+        <a class="btn btn-ghost" href="#building">See what I'm building</a>
+      </div>
+    </div>
+    <aside class="plate" aria-label="Station details">
+      <h3>Station</h3>
+      <dl>
+        <dt>Call</dt><dd>N9HO</dd>
+        <dt>Class</dt><dd>Amateur Extra</dd>
+        <dt>QTH</dt><dd>Alabama, USA</dd>
+        <dt>Mode</dt><dd>CW, mostly</dd>
+        <dt>Power</dt><dd>Whatever the day calls for</dd>
+        <dt>Bands</dt><dd>HF portable &middot; 2 m CW</dd>
+        <dt>Programs</dt><dd>POTA &middot; SOTA</dd>
+        <dt>Club</dt><dd><a href="https://bkg.club" target="_blank" rel="noopener">BKG #32</a> &middot; Alabama OG</dd>
+        <dt>Lookup</dt><dd><a href="https://www.qrz.com/db/N9HO" target="_blank" rel="noopener">QRZ</a> &middot; <a href="https://pota.app/#/profile/N9HO" target="_blank" rel="noopener">POTA</a></dd>
+      </dl>
+      <div class="note">QSL via LoTW and QRZ. If we worked and I busted your call, blame the pileup, not the key.</div>
+    </aside>
+  </div>
+</header>
 
-    <!-- About -->
-    <section>
-        <div class="container">
-            <h2 class="section-title">Welcome</h2>
-            <div class="about-grid">
-                <div class="about-text">
-                    <p>I'm <strong>Justin, N9HO</strong> — a ham radio operator with a passion for low-power portable operations, CW (Morse code), and sharing the hobby with others.</p>
-                    <p>This site is where I document field activations, share equipment reviews, and help newcomers discover the joy of Morse code. Whether you're a seasoned operator or just getting started, I hope you find something useful here.</p>
-                    <p>When I'm not on the air, you'll find me testing new gear, building antennas, or planning my next POTA activation.</p>
-                </div>
-                <div class="station-card">
-                    <h3>📡 Station Info</h3>
-                    <div class="station-row">
-                        <span class="station-label">Callsign</span>
-                        <span class="station-value">N9HO</span>
-                    </div>
-                    <div class="station-row">
-                        <span class="station-label">License</span>
-                        <span class="station-value">Extra</span>
-                    </div>
-                    <div class="station-row">
-                        <span class="station-label">Grid</span>
-                        <span class="station-value">EN52</span>
-                    </div>
-                    <div class="station-row">
-                        <span class="station-label">Primary Mode</span>
-                        <span class="station-value">CW</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<section id="building">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>What I'm building</h2>
+      <p>Every one of these started as something I needed at my own station or in my own field kit.</p>
+    </div>
+    <div class="projects">
+      <article class="proj">
+        <div class="proj-top"><span class="glyph">&middot;&minus; &minus;&minus; &minus;</span><span class="pill live">Open beta</span></div>
+        <h3>Another Morse Trainer</h3>
+        <p>Learn CW by ear with the Koch method. Characters at 33 WPM from day one, recognition time tracked on every answer, and 22 ways to train, from confusion drills to a simulated pileup. Free and open source, on iPhone and Android. The live CW decoder inside it is Jay's, W6JV.</p>
+        <ul>
+          <li><a href="https://anothermorsetrainer.app" target="_blank" rel="noopener">Site &amp; guide</a></li>
+          <li><a href="https://testflight.apple.com/join/ZwXF88Gh" target="_blank" rel="noopener">iOS TestFlight</a></li>
+          <li><a href="https://discord.gg/qgyk3TPUd9" target="_blank" rel="noopener">Android via Discord</a></li>
+          <li><a href="https://github.com/N9HO/another-morse-trainer" target="_blank" rel="noopener">Source</a></li>
+        </ul>
+      </article>
+      <article class="proj">
+        <div class="proj-top"><span class="glyph">&minus;&middot;&minus;&middot; &middot;&minus;&minus;</span><span class="pill brass">On the App Store</span></div>
+        <h3>Carrier Wave</h3>
+        <p>A logging suite for the field. Log a POTA or SOTA activation on your iPhone, spot yourself with one tap, and have the log upload itself to pota.app and QRZ when you pack up. Co-founded with <a href="https://github.com/jsvana" target="_blank" rel="noopener">Jay, W6JV</a>.</p>
+        <ul>
+          <li><a href="https://carrierwave.app" target="_blank" rel="noopener">carrierwave.app</a></li>
+          <li><a href="https://apps.apple.com/us/app/carrier-wave/id6758229084" target="_blank" rel="noopener">App Store</a></li>
+          <li><a href="https://discord.gg/PqubUxWW62" target="_blank" rel="noopener">Discord</a></li>
+        </ul>
+      </article>
+      <article class="proj">
+        <div class="proj-top"><span class="glyph">144 MHz</span><span class="pill">Design stage</span></div>
+        <h3>Brass Knuckle Node</h3>
+        <p>An inexpensive 2 m CW skimmer that feeds the Reverse Beacon Network and survives sitting next to an HF amplifier. Filter first, LNA second, surge pigtail as the only DIY part. Roughly $150 to $200 per node. Modeled, not yet built.</p>
+        <ul>
+          <li><a href="https://github.com/N9HO/Brass-Knuckle-Node" target="_blank" rel="noopener">Design &amp; build guide</a></li>
+          <li><a href="https://bkg.club" target="_blank" rel="noopener">Brass Knuckle Gang</a></li>
+        </ul>
+      </article>
+    </div>
 
-    <!-- Articles -->
-    <section id="articles">
-        <div class="container">
-            <h2 class="section-title">Recent Articles</h2>
-            <div class="articles-grid">
-                <article class="article-card">
-                    <div class="article-meta">
-                        <span class="article-cat">Field Report</span>
-                        <span class="article-date">Jan 10, 2026</span>
-                    </div>
-                    <h3><a href="#">Lorem Ipsum Dolor Sit Amet Consectetur</a></h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-                </article>
-                <article class="article-card">
-                    <div class="article-meta">
-                        <span class="article-cat">Equipment</span>
-                        <span class="article-date">Dec 28, 2025</span>
-                    </div>
-                    <h3><a href="#">Ut Enim Ad Minim Veniam Quis Nostrud</a></h3>
-                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat.</p>
-                </article>
-                <article class="article-card">
-                    <div class="article-meta">
-                        <span class="article-cat">Tutorial</span>
-                        <span class="article-date">Dec 15, 2025</span>
-                    </div>
-                    <h3><a href="#">Excepteur Sint Occaecat Cupidatat Non</a></h3>
-                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
-                </article>
-            </div>
-            <a href="#" class="view-all">View All Articles →</a>
-        </div>
-    </section>
+    <div class="bench">
+      <p style="padding:18px 0 4px;color:var(--muted);font-size:0.95rem">Carrier Wave is a two-person shop. Everything tagged W6JV is built with <a href="https://github.com/jsvana" target="_blank" rel="noopener">Jay Vana</a>, who writes the Rust and the backends while I stay closer to the radio.</p>
+      <div class="bench-row">
+        <div class="name">Field Guide <span class="with">with <a href="https://github.com/jsvana" target="_blank" rel="noopener">W6JV</a></span></div>
+        <div class="what">Offline manuals for QRP rigs on your phone: Elecraft KX2 and KH1, Mountain Topper, Penntek TR-35, Xiegu, IC-705 and more. No signal at the summit, no problem.</div>
+        <a class="go" href="https://github.com/CarrierWaveApp/field_guide" target="_blank" rel="noopener">GitHub &rarr;</a>
+      </div>
+      <div class="bench-row">
+        <div class="name">Propagation Estimator <span class="with">with <a href="https://github.com/jsvana" target="_blank" rel="noopener">W6JV</a></span></div>
+        <div class="what">Live RBN and PSK Reporter spots on a map with great circle paths, the gray line, and ionosonde data.</div>
+        <a class="go" href="https://github.com/CarrierWaveApp/HamRadioProp" target="_blank" rel="noopener">GitHub &rarr;</a>
+      </div>
+      <div class="bench-row">
+        <div class="name">CW Swap <span class="with">with <a href="https://github.com/jsvana" target="_blank" rel="noopener">W6JV</a></span></div>
+        <div class="what">Ham radio classifieds from QRZ and QTH.com in one feed, so the KX2 you want does not sell before you see it.</div>
+        <a class="go" href="https://github.com/CarrierWaveApp/cw-swap" target="_blank" rel="noopener">GitHub &rarr;</a>
+      </div>
+      <div class="bench-row">
+        <div class="name">SCU-LAN10 protocol <span class="with">with <a href="https://github.com/jsvana" target="_blank" rel="noopener">W6JV</a></span></div>
+        <div class="what">A reverse-engineered spec for Yaesu's network remote protocol, written down so anyone can build a client for an FTDX10 or FT-710.</div>
+        <a class="go" href="https://github.com/CarrierWaveApp/sculan10-protocol" target="_blank" rel="noopener">Read the spec &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Quick Links -->
-    <section id="equipment">
-        <div class="container">
-            <h2 class="section-title">Quick Links</h2>
-            <div class="links-grid">
-                <a href="https://pota.app" target="_blank" class="link-card">
-                    <div class="link-icon">🏞️</div>
-                    <h4>POTA</h4>
-                    <p>Parks on the Air</p>
-                </a>
-                <a href="https://sotawatch.sota.org.uk" target="_blank" class="link-card">
-                    <div class="link-icon">⛰️</div>
-                    <h4>SOTA</h4>
-                    <p>Summits on the Air</p>
-                </a>
-                <a href="https://www.qrz.com" target="_blank" class="link-card">
-                    <div class="link-icon">🔍</div>
-                    <h4>QRZ</h4>
-                    <p>Callsign Lookups</p>
-                </a>
-                <a href="https://www.arrl.org" target="_blank" class="link-card">
-                    <div class="link-icon">📚</div>
-                    <h4>ARRL</h4>
-                    <p>Band Plans & News</p>
-                </a>
-                <a href="https://www.youtube.com/@JustinN9HO" target="_blank" class="link-card">
-                    <div class="link-icon">▶️</div>
-                    <h4>YouTube</h4>
-                    <p>My Channel</p>
-                </a>
-                <a href="#learn-cw" class="link-card">
-                    <div class="link-icon">📻</div>
-                    <h4>Learn CW</h4>
-                    <p>Morse Resources</p>
-                </a>
-            </div>
-        </div>
-    </section>
+<section id="air">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>On the air</h2>
+    </div>
+    <div class="air">
+      <div>
+        <p><strong>Portable, straight to the key.</strong> Most of my QSOs happen from a picnic table with a wire in a tree. POTA activations are the excuse; the hunt for a clean, quick CW exchange is the point.</p>
+        <p><strong>QRP is a challenge, not a religion.</strong> I run real power when the band or the pileup calls for it, but there is nothing like getting through on a few watts. When I turn it down, it is for the fun of it.</p>
+        <p><strong>2 m CW is criminally under-used.</strong> That is why I run with the Brass Knuckle Gang, below, and why the skimmer node exists: so 144 MHz contacts show up on the RBN like HF ones do.</p>
+        <p><strong>New to CW? Call me anyway.</strong> Slow is fine. I will match your speed, send a proper roger, and QRS as far as you need. Everybody was 5 WPM once.</p>
+      </div>
+      <ul class="find" aria-label="Where to find N9HO">
+        <li><span class="k">SPOT</span><div><b><a href="https://pota.app/#/profile/N9HO" target="_blank" rel="noopener">pota.app</a></b><span>Activations and spots when I am in a park.</span></div></li>
+        <li><span class="k">RBN</span><div><b><a href="https://www.reversebeacon.net/dxsd1/dxsd1.php?f=0&amp;c=N9HO" target="_blank" rel="noopener">Reverse Beacon Network</a></b><span>See where my CQ is being heard right now.</span></div></li>
+        <li><span class="k">QRZ</span><div><b><a href="https://www.qrz.com/db/N9HO" target="_blank" rel="noopener">qrz.com/db/N9HO</a></b><span>Bio, QSL info, and a way to reach me.</span></div></li>
+        <li><span class="k">2M</span><div><b><a href="https://bkg.club" target="_blank" rel="noopener">bkg.club</a></b><span>Brass Knuckle Gang roster, map, and how to join.</span></div></li>
+      </ul>
+    </div>
 
-    <!-- CW Section -->
-    <section id="learn-cw">
-        <div class="container">
-            <h2 class="section-title">Learn CW</h2>
-            <div class="cw-grid">
-                <div class="cw-text">
-                    <p>CW (Continuous Wave) — Morse code — is one of the most efficient and rewarding ways to communicate on the air. With minimal power and simple equipment, you can work the world.</p>
-                    <p>I've put together a collection of resources to help you get started or improve your skills. From beginner tutorials to practice tools, there's something for every level.</p>
-                    <a href="#" class="btn">Explore CW Resources →</a>
-                </div>
-                <div class="morse-cards">
-                    <div class="morse-card">
-                        <div class="morse-char">N</div>
-                        <div class="morse-code">-.</div>
-                    </div>
-                    <div class="morse-card">
-                        <div class="morse-char">9</div>
-                        <div class="morse-code">----.</div>
-                    </div>
-                    <div class="morse-card">
-                        <div class="morse-char">H</div>
-                        <div class="morse-code">....</div>
-                    </div>
-                    <div class="morse-card">
-                        <div class="morse-char">O</div>
-                        <div class="morse-code">---</div>
-                    </div>
-                </div>
-            </div>
+    <div class="bkg" id="bkg">
+      <div>
+        <div class="tag"><span>&#129460;</span> BKG #32 &middot; Alabama OG</div>
+        <h3>Brass Knuckle Gang</h3>
+        <p>A law-abiding, FCC-respecting gang for operators who pound brass on 2 meter CW. It started in northern Utah in 2025 and now has members across the country and a few overseas. I was an early member, number 32, and I am the OG for the state of Alabama: the first brass pounder here, and the one to work if you want in.</p>
+        <p><strong>The name is literal.</strong> Pounding brass is working a manual key. The gang exists because 144 MHz CW is nearly empty and the people who use it are some of the best operators you will meet.</p>
+        <p><strong>Want in?</strong> Work an existing member on 2 m CW, send them the UTC time and date, and you get a number. If you are in Alabama, that member is probably me. Watch for me on POTA and SOTA activations and bring a key.</p>
+        <div class="bkg-links">
+          <a href="https://bkg.club" target="_blank" rel="noopener">bkg.club</a>
+          <a href="https://bkg.club/recruit.html" target="_blank" rel="noopener">How to join</a>
+          <a href="https://discord.gg/wDs5dth22k" target="_blank" rel="noopener">Gang Discord</a>
+          <a href="https://github.com/N9HO/Brass-Knuckle-Node" target="_blank" rel="noopener">The skimmer node</a>
         </div>
-    </section>
+      </div>
+      <ul class="bylaws" aria-label="The three bylaws">
+        <li><span class="n">I</span><div><b>Never talk about BKG</b><span>Except you should, constantly, to everyone you meet. 2 m CW needs more operators.</span></div></li>
+        <li><span class="n">II</span><div><b>The proper roger</b><span>Every QSO gets at least one thoughtful, well-sent R. Failure may result in excommunication.</span></div></li>
+        <li><span class="n">III</span><div><b>The QRL formality</b><span>Always send QRL? before taking a frequency. On 2 m CW it is purely ceremonial. We do it anyway.</span></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-inner">
-            <div class="footer-brand">
-                <div class="nav-logo">N9HO</div>
-                <p>Sharing the joy of amateur radio, one QSO at a time.</p>
-            </div>
-            <div>
-                <h4>Navigation</h4>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#articles">Articles</a></li>
-                    <li><a href="#equipment">Equipment</a></li>
-                    <li><a href="#learn-cw">Learn CW</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="https://pota.app" target="_blank">POTA</a></li>
-                    <li><a href="https://sotawatch.sota.org.uk" target="_blank">SOTA</a></li>
-                    <li><a href="https://www.qrz.com" target="_blank">QRZ.com</a></li>
-                    <li><a href="https://www.arrl.org" target="_blank">ARRL</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4>73 de N9HO</h4>
-                <p style="font-family: monospace; color: var(--accent); font-size: 0.9rem;">-. ----. .... ---</p>
-            </div>
+<section id="cw">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Learn CW</h2>
+      <p>Tap a character to hear it the way you should learn it: as a sound, at speed, never as a picture of dots and dashes.</p>
+    </div>
+    <div class="cw">
+      <div>
+        <p>The mistake almost everyone makes is memorizing a chart and counting dits. It works up to about 10 WPM and then falls apart, because at real speeds there is no time to count. The fix is to only ever hear characters fast, with long gaps between them while you are learning. That is the Koch method with Farnsworth spacing, and it is how Another Morse Trainer works.</p>
+        <p>Start with two characters. Add one when you copy 90%. Learn your callsign, a question mark, and your state, and you have enough to hunt POTA.</p>
+        <div class="cw-ctl">
+          <label>Character speed <input type="range" id="wpm" min="15" max="35" value="25"> <span id="wpmVal">25 WPM</span></label>
+          <label>Tone <input type="range" id="tone" min="400" max="900" value="600" step="10"> <span id="toneVal">600 Hz</span></label>
         </div>
-        <div class="footer-bottom">
-            <p>© 2026 N9HO • Justin's Ham Radio Adventures</p>
-        </div>
-    </footer>
+        <p style="margin-top:20px"><a class="btn btn-brass" href="https://anothermorsetrainer.app" target="_blank" rel="noopener">Get Another Morse Trainer, free</a></p>
+      </div>
+      <div>
+        <div class="chart" id="chart" role="group" aria-label="Morse code chart, tap to play"></div>
+        <div class="chart-note">Audio plays in your browser. Timing follows PARIS at the speed set on the left.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="watch">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Watch and follow</h2>
+      <p>Field activations, gear on the bench, and the occasional lesson learned the hard way.</p>
+    </div>
+    <div class="watch">
+      <a class="card-link" href="https://www.youtube.com/@JustinN9HO" target="_blank" rel="noopener">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="#e53935"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4L15.8 12l-6.3 3.6z"/></svg></span>
+        <div><b>YouTube: @JustinN9HO</b><span>Activations, reviews, and CW practice on camera.</span></div>
+      </a>
+      <a class="card-link" href="https://github.com/N9HO" target="_blank" rel="noopener">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg></span>
+        <div><b>GitHub: N9HO</b><span>Everything above is open, including this site.</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <div class="brand" style="font-size:1.3rem">N9HO</div>
+        <p style="margin-top:8px">Justin Rogers. CW, portable, and a builder of things for hams. If something here helped you get on the air, that is the whole point.</p>
+        <div class="sk" aria-label="73 in Morse">&minus;&minus;&middot;&middot;&middot; &middot;&middot;&middot;&minus;&minus; &nbsp;&middot;&minus;&middot;&minus;&middot;</div>
+      </div>
+      <div>
+        <h4>Projects</h4>
+        <ul>
+          <li><a href="https://anothermorsetrainer.app" target="_blank" rel="noopener">Another Morse Trainer</a></li>
+          <li><a href="https://carrierwave.app" target="_blank" rel="noopener">Carrier Wave</a></li>
+          <li><a href="https://github.com/N9HO/Brass-Knuckle-Node" target="_blank" rel="noopener">Brass Knuckle Node</a></li>
+          <li><a href="https://buymeacoffee.com/n9ho" target="_blank" rel="noopener">Buy me a coffee</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="https://www.youtube.com/@JustinN9HO" target="_blank" rel="noopener">YouTube</a></li>
+          <li><a href="https://github.com/N9HO" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="https://www.qrz.com/db/N9HO" target="_blank" rel="noopener">QRZ</a></li>
+          <li><a href="https://discord.gg/qgyk3TPUd9" target="_blank" rel="noopener">Discord</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Justin Rogers, N9HO</span>
+      <span>73 es gud DX &middot; <a href="https://github.com/N9HO/N9HO.com" target="_blank" rel="noopener">site source</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var CODE = {
+    A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',
+    N:'-.',O:'---',P:'.--.',Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',Y:'-.--',Z:'--..',
+    '0':'-----','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.'
+  };
+  var ctx = null, playing = false;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function audio() {
+    if (!ctx) { try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+  function wpm() { return parseInt(document.getElementById('wpm').value, 10) || 25; }
+  function tone() { return parseInt(document.getElementById('tone').value, 10) || 600; }
+  // PARIS timing: one unit = 1.2 / WPM seconds.
+  function unit() { return 1.2 / wpm(); }
+
+  // Play a string of text; onEl(index, on) lights up bar elements in the hero.
+  function send(text, opts) {
+    var ac = audio(); if (!ac) return;
+    opts = opts || {};
+    var u = unit(), now = ac.currentTime, t = now + 0.08;
+    var osc = ac.createOscillator(), g = ac.createGain();
+    osc.type = 'sine'; osc.frequency.value = tone();
+    // Start fully silent, so nothing leaks before the first element is keyed.
+    g.gain.value = 0;
+    g.gain.setValueAtTime(0, now);
+    osc.connect(g); g.connect(ac.destination);
+    var RISE = 0.005, LEVEL = 0.3;
+    var timeline = [];
+    var chars = text.toUpperCase().split('');
+    var i, j, code, d;
+    for (i = 0; i < chars.length; i++) {
+      if (chars[i] === ' ') { t += u * 4; continue; } // 3 already added after last char -> 7 total
+      code = CODE[chars[i]]; if (!code) continue;
+      for (j = 0; j < code.length; j++) {
+        d = code[j] === '.' ? u : 3 * u;
+        // Keyed envelope: 5 ms linear rise, hold, 5 ms linear fall. No clicks.
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(LEVEL, t + RISE);
+        g.gain.setValueAtTime(LEVEL, t + d - RISE);
+        g.gain.linearRampToValueAtTime(0, t + d);
+        timeline.push({ at: t, dur: d, idx: timeline.length });
+        t += d + u;
+      }
+      t += 2 * u; // char gap = 3 units total
+    }
+    osc.start(now); osc.stop(t + 0.1);
+    playing = true;
+    osc.onended = function () { playing = false; if (opts.onDone) opts.onDone(); };
+    if (opts.onElement && !reduced) {
+      var base = now;
+      timeline.forEach(function (ev) {
+        setTimeout(function () { opts.onElement(ev.idx, true); }, (ev.at - base) * 1000);
+        setTimeout(function () { opts.onElement(ev.idx, false); }, (ev.at - base + ev.dur) * 1000);
+      });
+    }
+  }
+
+  // Hero bar for the callsign.
+  var bar = document.getElementById('callBar'), elements = [];
+  'N9HO'.split('').forEach(function (c, ci) {
+    CODE[c].split('').forEach(function (s, si) {
+      var el = document.createElement('i'); el.className = s === '.' ? 'dit' : 'dah';
+      bar.appendChild(el); elements.push(el);
+      if (si < CODE[c].length - 1) { var gp = document.createElement('i'); gp.className = 'gap'; bar.appendChild(gp); }
+    });
+    if (ci < 3) { var cg = document.createElement('i'); cg.className = 'gap-char'; bar.appendChild(cg); }
+  });
+  document.getElementById('playCall').addEventListener('click', function () {
+    if (playing) return;
+    send('N9HO', { onElement: function (i, on) { if (elements[i]) elements[i].classList.toggle('on', on); } });
+  });
+
+  // Chart.
+  var chart = document.getElementById('chart');
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('').forEach(function (c) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'key';
+    b.setAttribute('aria-label', 'Play ' + c + ' in Morse');
+    b.innerHTML = '<div class="c">' + c + '</div><div class="m">' + CODE[c].replace(/\./g, '·').replace(/-/g, '−') + '</div>';
+    b.addEventListener('click', function () {
+      if (playing) return;
+      b.classList.add('on');
+      send(c, { onDone: function () { b.classList.remove('on'); } });
+    });
+    chart.appendChild(b);
+  });
+
+  var wpmEl = document.getElementById('wpm'), toneEl = document.getElementById('tone');
+  wpmEl.addEventListener('input', function () { document.getElementById('wpmVal').textContent = wpmEl.value + ' WPM'; });
+  toneEl.addEventListener('input', function () { document.getElementById('toneVal').textContent = toneEl.value + ' Hz'; });
+
+  // Close the mobile menu after choosing a link.
+  document.querySelectorAll('.nav-links a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function () { document.querySelector('.nav-links').classList.remove('open'); });
+  });
+})();
+</script>
 </body>
 </html>
