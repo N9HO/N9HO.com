@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W4D Winter Field Day 2027 | CCARA</title>
+<meta name="description" content="Winter Field Day 2027, January 23-24, with the Calhoun County Amateur Radio Association (WB4GNA) as W4D. Dates, goals, rules, what to bring, and the sign-up form.">
+<meta property="og:title" content="W4D Winter Field Day 2027 | CCARA">
+<meta property="og:description" content="January 23-24, 2027. Calhoun County Amateur Radio Association operating as W4D from Munford, Alabama.">
+<meta property="og:image" content="https://www.n9ho.com/wfd/ccara-logo.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="ccara-logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #101418;
+  --panel: #171d24;
+  --line: #2a333d;
+  --line-strong: #3a4552;
+  --text: #e7e2d6;
+  --muted: #9aa3ad;
+  --brass: #d9a441;
+  --brass-deep: #b07f24;
+  --brass-ink: #1a1408;
+  --brass-soft: rgba(217,164,65,0.12);
+  --warn: #e0875a;
+  --shadow: 0 18px 40px rgba(0,0,0,0.35);
+  --display: 'Barlow Condensed', 'Arial Narrow', Impact, sans-serif;
+  --body: 'Source Sans 3', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --ink: #f3efe6;
+    --panel: #ffffff;
+    --line: #ddd6c8;
+    --line-strong: #c4bba9;
+    --text: #1b1f24;
+    --muted: #5d6670;
+    --brass: #a8731c;
+    --brass-deep: #7f5612;
+    --brass-ink: #fffaf0;
+    --brass-soft: rgba(168,115,28,0.10);
+    --warn: #b4521f;
+    --shadow: 0 18px 40px rgba(60,40,10,0.10);
+    color-scheme: light;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { font-family: var(--body); font-size: 17px; line-height: 1.6; color: var(--text); background: var(--ink); -webkit-font-smoothing: antialiased; }
+a { color: var(--brass); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; border-radius: 3px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.05; text-wrap: balance; font-weight: 600; }
+p { max-width: 64ch; }
+p + p { margin-top: 12px; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+.eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); }
+
+.nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--ink) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav-inner { max-width: 1040px; margin: 0 auto; padding: 0 24px; min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.brand { font-family: var(--display); font-weight: 700; font-size: 1.5rem; letter-spacing: 0.06em; color: var(--text); display: flex; align-items: center; gap: 10px; }
+.brand img { width: 30px; height: 30px; border-radius: 4px; }
+.brand:hover { text-decoration: none; }
+.nav-links { display: flex; gap: 22px; list-style: none; flex-wrap: wrap; }
+.nav-links a { color: var(--muted); font-size: 0.95rem; font-weight: 600; }
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+
+.hero { padding: 64px 0 48px; border-bottom: 1px solid var(--line); background: radial-gradient(ellipse 60% 50% at 80% 0%, var(--brass-soft), transparent 70%); }
+.hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center; }
+.logo-row { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+.logo-row img { width: 96px; height: 96px; border-radius: 8px; border: 1px solid var(--line-strong); background: #fff; }
+.callsign { font-family: var(--display); font-weight: 700; font-size: clamp(4.5rem, 13vw, 8.5rem); line-height: 0.9; letter-spacing: 0.02em; margin: 8px 0 14px; }
+.callsign span { color: var(--brass); }
+.lede { font-size: 1.25rem; max-width: 46ch; }
+.sub { color: var(--muted); margin-top: 10px; max-width: 54ch; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 6px; font-weight: 600; font-size: 1rem; border: 1px solid transparent; }
+.btn:hover { text-decoration: none; }
+.btn-brass { background: var(--brass); color: var(--brass-ink); }
+.btn-brass:hover { background: var(--brass-deep); color: #fff; }
+.btn-ghost { border-color: var(--line-strong); color: var(--text); }
+.btn-ghost:hover { border-color: var(--brass); color: var(--brass); }
+
+.plate { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px; box-shadow: var(--shadow); font-family: var(--mono); font-size: 0.85rem; position: relative; }
+.plate::before { content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px; background: var(--brass); border-radius: 0 2px 2px 0; }
+.plate h3 { font-family: var(--mono); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.plate dl { display: grid; grid-template-columns: auto 1fr; column-gap: 20px; row-gap: 9px; }
+.plate dt { color: var(--muted); }
+.plate dd { text-align: right; }
+.count { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); color: var(--muted); font-size: 0.8rem; }
+.count b { color: var(--brass); font-size: 1.1rem; }
+
+section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: none; }
+.sec-head { margin-bottom: 26px; }
+.sec-head h2 { font-size: 2.3rem; letter-spacing: 0.01em; }
+.sec-head p { color: var(--muted); margin-top: 8px; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px; }
+.card h3 { font-size: 1.5rem; margin-bottom: 8px; }
+.card p, .card li { color: var(--muted); font-size: 0.98rem; }
+.card strong { color: var(--text); font-weight: 600; }
+.card ul { list-style: none; display: grid; gap: 6px; margin-top: 8px; }
+.card ul li::before { content: "\2022"; color: var(--brass); margin-right: 8px; }
+.notice { border: 1px solid var(--warn); border-left-width: 4px; border-radius: 6px; padding: 14px 18px; background: var(--panel); }
+.notice b { color: var(--warn); }
+.bands { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.bands span { font-family: var(--mono); font-size: 0.82rem; border: 1px solid var(--line-strong); border-radius: 999px; padding: 4px 12px; color: var(--text); }
+.tbd { font-family: var(--mono); font-size: 0.78rem; color: var(--warn); border: 1px dashed var(--warn); border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+.faq details { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 20px; margin-bottom: 10px; }
+.faq summary { font-weight: 600; cursor: pointer; }
+.faq details p { color: var(--muted); margin-top: 10px; }
+.cta { text-align: center; }
+.cta p { margin: 10px auto 0; color: var(--muted); }
+.cta .btn { margin-top: 20px; font-size: 1.1rem; padding: 14px 28px; }
+
+footer { border-top: 1px solid var(--line); padding: 36px 0 44px; color: var(--muted); font-size: 0.92rem; }
+footer .row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+footer a { color: var(--text); }
+
+@media (max-width: 860px) {
+  .hero-grid, .grid2, .grid3 { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .hero { padding: 40px 0 32px; }
+  .sec-head h2 { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand" aria-label="W4D Winter Field Day home"><img src="ccara-logo.jpg" alt="">W4D &middot; WFD 2027</a>
+    <ul class="nav-links">
+      <li><a href="#when">When &amp; where</a></li>
+      <li><a href="#goals">Goals</a></li>
+      <li><a href="#rules">Rules</a></li>
+      <li><a href="#plan">Planning</a></li>
+      <li><a href="#bring">What to bring</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#signup">Sign up</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="logo-row">
+        <img src="ccara-logo.jpg" alt="Calhoun County Amateur Radio Association WB4GNA logo">
+        <div class="eyebrow">Calhoun County Amateur Radio Association &middot; WB4GNA</div>
+      </div>
+      <h1 class="callsign">W4<span>D</span></h1>
+      <p class="lede">Winter Field Day 2027: emergency-style operating, in the cold, with friends.</p>
+      <p class="sub">CCARA is operating from a member's cabin in Munford, Alabama. Come operate, log, learn, or help set up. Please sign up so we can plan the site, the stations, and the food.</p>
+      <div class="hero-actions">
+        <a class="btn btn-brass" href="#signup" id="heroSignup">Sign up</a>
+        <a class="btn btn-ghost" href="#when">Dates &amp; location</a>
+      </div>
+    </div>
+    <aside class="plate" aria-label="Event details">
+      <h3>Event</h3>
+      <dl>
+        <dt>Dates</dt><dd>Jan 23&ndash;24, 2027</dd>
+        <dt>Start</dt><dd>1900 UTC Sat (1 PM CST)</dd>
+        <dt>End</dt><dd>1900 UTC Sun (1 PM CST)</dd>
+        <dt>Call</dt><dd>W4D</dd>
+        <dt>Club</dt><dd>CCARA (WB4GNA)</dd>
+        <dt>Section</dt><dd>AL</dd>
+        <dt>Site</dt><dd>Munford, AL</dd>
+        <dt>Category</dt><dd>Indoor</dd>
+      </dl>
+      <div class="count" id="count" aria-live="off">Counting down&hellip;</div>
+    </aside>
+  </div>
+</header>
+
+<section id="when">
+  <div class="wrap">
+    <div class="sec-head"><h2>When &amp; where</h2></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Dates and times</h3>
+        <p><strong>Saturday, January 23 to Sunday, January 24, 2027.</strong> The event runs 24 hours, from 1900 UTC Saturday (1:00 PM Central) to 1900 UTC Sunday (1:00 PM Central).</p>
+        <ul>
+          <li>Setup: <span class="tbd">TBD</span></li>
+          <li>Teardown: after the close on Sunday</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>The cabin</h3>
+        <p><strong>2575 Kentuck Rd., Munford, AL 36268</strong></p>
+        <p>Cell and internet service at the site is poor, so we are bringing our own link. Thank you to <strong>Russ Adams</strong>, who owns the cabin, for letting us use the property again.</p>
+        <ul>
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=2575+Kentuck+Rd+Munford+AL+36268" target="_blank" rel="noopener">Open in Maps</a></li>
+          <li>Talk-in frequency: <span class="tbd">TBD</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="goals">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>What we're trying to do</h2>
+      <p>Winter Field Day is mainly about practicing emergency-style operating in cold, adverse conditions. The contest part is real, but it comes second.</p>
+    </div>
+    <div class="grid3">
+      <div class="card">
+        <h3>Be ready</h3>
+        <p>Set up and run stations away from home, using alternate power where we can, and practice working through a long, cold night.</p>
+      </div>
+      <div class="card">
+        <h3>Earn objectives</h3>
+        <p>Pick up as many WFDA objectives as we can, including Winlink, a bulletin, a cross-band repeater, and SSTV.</p>
+      </div>
+      <div class="card">
+        <h3>Get everyone on the air</h3>
+        <p>Especially newer operators. Learn from each other, have fun, stay warm, and share good food. A friendly rivalry is welcome, but people come before points.</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px">
+      <h3>12 bands</h3>
+      <p>Our plan is to be on the air on all of these. The last slot depends on what equipment we can find.</p>
+      <div class="bands">
+        <span>630m</span><span>160m</span><span>80m</span><span>40m</span><span>20m</span><span>15m</span><span>10m</span><span>6m</span><span>2m</span><span>1.25m</span><span>70cm</span><span>900 MHz <em>or</em> 1.3 GHz</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rules">
+  <div class="wrap">
+    <div class="sec-head"><h2>Rules to know</h2></div>
+    <div class="notice">
+      <p><b>WSJT-X modes don't count.</b> FT8, FT4, and the rest of that family are not allowed in Winter Field Day, and contacts made on them would be disqualified. Digital contacts have to use other modes such as PSK31, RTTY, or Olivia.</p>
+    </div>
+    <div class="grid2" style="margin-top:20px">
+      <div class="card">
+        <h3>Off-site VHF/UHF contact</h3>
+        <p>Under the contest rules, the person acting as our off-site contact for the VHF/UHF modes cannot be at the field day site at all during the event. We will visit beforehand and set up all the equipment they need. If you want the job, say so on the sign-up form.</p>
+      </div>
+      <div class="card">
+        <h3>Guest operators</h3>
+        <p>Operators without a license class that allows a band can still operate under our call with a control operator. Ask when you sign up.</p>
+      </div>
+    </div>
+    <p style="margin-top:16px;color:var(--muted);font-size:0.92rem">This page is a summary. The official rules are published by the Winter Field Association at <a href="https://winterfieldday.org/" target="_blank" rel="noopener">winterfieldday.org</a>, and they win if anything here disagrees.</p>
+  </div>
+</section>
+
+<section id="plan">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>How we're planning the site</h2>
+      <p>Many stations in a small area interfere with each other, so we are planning antenna placement and band/mode assignments in advance.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Tell us what you're bringing</h3>
+        <p>On the sign-up form, list any antennas, masts, and supports, with lengths, heights, weight, and how long they take to set up. Tell us about radios, filters, RFI gear, and long coax runs (200&ndash;300 ft).</p>
+      </div>
+      <div class="card">
+        <h3>Please don't show up unannounced with a radio</h3>
+        <p>An unplanned station could interfere with the ones we have already laid out. If you arrive without telling us, we may ask you to take an operating shift on an existing station. If you tell us ahead of time, we can plan a place for you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="bring">
+  <div class="wrap">
+    <div class="sec-head"><h2>What to bring</h2></div>
+    <div class="grid3">
+      <div class="card">
+        <h3>Logging</h3>
+        <p>We log with <strong>N3FJP</strong> on Windows. Bring a laptop that can run it. If you have never used it, learn it <strong>before</strong> Field Day. We will give general help and look into a training class, but during the event there will be no time to teach.</p>
+      </div>
+      <div class="card">
+        <h3>Headphones</h3>
+        <p>The space is small, so every position needs headphones or earbuds. Bring <strong>closed-back</strong> headphones or in-ear earbuds. <strong>No open-back headphones</strong>: they have vented ear cups that let sound leak out, and in a crowded room that audio bleeds onto other stations. A headphone splitter lets a logging partner listen along.</p>
+      </div>
+      <div class="card">
+        <h3>SSB gear</h3>
+        <ul>
+          <li>Footswitch</li>
+          <li>Boom mic</li>
+          <li>Mic stand</li>
+        </ul>
+        <p style="margin-top:8px">Mark everything with your callsign so it goes home with you.</p>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:20px">
+      <div class="card">
+        <h3>Food</h3>
+        <p>Tell us which meals you'll eat with us and any dietary needs. We may do a potluck or family-style dinner, or order food and ask everyone to chip in a few dollars. Both options are on the sign-up form.</p>
+      </div>
+      <div class="card">
+        <h3>Overnight</h3>
+        <p>We can't plan on sleeping space inside the cabin. If you need to rest, be ready to sleep safely in your vehicle or another setup. It will be cold, so plan for that. Never run a vehicle engine or generator in an enclosed space while sleeping.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap faq">
+    <div class="sec-head"><h2>Questions</h2></div>
+    <details><summary>I've never done Field Day. Can I still come?</summary><p>Yes. Tell us on the sign-up form, and we will pair you with someone. We want newer operators on the air.</p></details>
+    <details><summary>I'm not comfortable on SSB. How can I help?</summary><p>You can log for someone working SSB, operate CW or an accepted digital mode, or take an overnight shift. Tell us what you are comfortable with and we will fit you in.</p></details>
+    <details><summary>What if I only want to work one shift?</summary><p>That's fine. The form asks how much you want to operate, from as much as possible to a single overnight shift.</p></details>
+    <details><summary>Who do I contact?</summary><p>Justin Rogers, N9HO, Winter Field Day coordinator for CCARA. Contact: <span class="tbd">TBD</span></p></details>
+    <details><summary>Is there a schedule or station map?</summary><p>Not yet. We will post the antenna plan, shift schedule, and meal plan here once the sign-ups are in.</p></details>
+  </div>
+</section>
+
+<section id="signup">
+  <div class="wrap cta">
+    <h2 style="font-size:2.6rem">Sign up for W4D</h2>
+    <p>The form takes about ten minutes. It covers your radios, antennas, logging, food, and overnight plans. Please fill it in by <span class="tbd">TBD</span>.</p>
+    <a class="btn btn-brass" href="https://wfd.n9ho.com/" id="signupBtn">Open the sign-up form</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap row">
+    <div>W4D Winter Field Day 2027 &middot; Calhoun County Amateur Radio Association (WB4GNA)<br>CCARA logo and club information from <a href="https://annistonhamradio.com/" target="_blank" rel="noopener">annistonhamradio.com</a>.</div>
+    <div>Page by <a href="https://www.n9ho.com/">N9HO</a> &middot; <a href="https://winterfieldday.org/" target="_blank" rel="noopener">Official WFDA rules</a></div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Winter Field Day 2027 starts 1900 UTC on Saturday, January 23, 2027.
+  var start = Date.UTC(2027, 0, 23, 19, 0, 0);
+  var end = start + 24 * 3600 * 1000;
+  var el = document.getElementById('count');
+  function tick() {
+    var now = Date.now();
+    if (now >= end) { el.textContent = 'Winter Field Day 2027 is over. Thank you, everyone!'; return; }
+    if (now >= start) { el.innerHTML = '<b>On the air now!</b>'; return; }
+    var d = Math.floor((start - now) / 86400000);
+    el.innerHTML = '<b>' + d + '</b> day' + (d === 1 ? '' : 's') + ' until the start';
+  }
+  tick();
+  setInterval(tick, 3600000);
+})();
+</script>
+</body>
+</html>
