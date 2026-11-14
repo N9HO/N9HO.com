@@ -38,6 +38,10 @@ Justin writes in first person, plain and direct, like a ham talking to another h
 - Credit collaborators (Jay, W6JV) where the existing entries do.
 - Links: external links use `target="_blank" rel="noopener"`. Use `&amp;` and HTML entities in markup as the file already does.
 
+## Technical write-ups
+
+Every technical write-up (a project "how it works" page like `qrz-photo/`) carries a short, friendly disclaimer near the top, in a `.note` box. It says Justin did the project for fun, posts write-ups to give readers ideas for their own projects, and can't help with someone's own version or with troubleshooting. Don't promise support or invite questions on those pages. Copy the wording from `qrz-photo/index.html` and keep that tone.
+
 ## Privacy and safety
 
 This is a public site. Never add: home address, phone numbers, email addresses, IP addresses or hostnames of his home network, API keys, tokens, QRZ or other credentials, or anything about his family or his restoration business (ADS) unless he explicitly asks. If a project involves a home server or network, describe what it does, not how to reach it.

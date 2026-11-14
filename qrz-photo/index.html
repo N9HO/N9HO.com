@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QRZ Setup Photo: how it works | N9HO</title>
+<meta name="description" content="How I send a photo of my POTA setup from my iPhone to my QRZ page, with a live ON AIR banner driven by POTA spots. A small Flask app, Docker, Tailscale Funnel, and an iPhone Shortcut.">
+<meta property="og:title" content="QRZ Setup Photo: how it works | N9HO">
+<meta property="og:description" content="An iPhone Shortcut, a small Python app, and a live ON AIR banner on my QRZ page, driven by POTA spots.">
+<meta property="og:type" content="article">
+<link rel="canonical" href="https://www.n9ho.com/qrz-photo/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23101418'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial Narrow,Arial' font-weight='700' font-size='30' fill='%23d9a441'%3EN9%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #101418;
+  --panel: #171d24;
+  --line: #2a333d;
+  --line-strong: #3a4552;
+  --text: #e7e2d6;
+  --muted: #9aa3ad;
+  --brass: #d9a441;
+  --brass-deep: #b07f24;
+  --brass-ink: #1a1408;
+  --brass-soft: rgba(217,164,65,0.12);
+  --warn: #e0875a;
+  --shadow: 0 18px 40px rgba(0,0,0,0.35);
+  --display: 'Barlow Condensed', 'Arial Narrow', Impact, sans-serif;
+  --body: 'Source Sans 3', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --ink: #f3efe6;
+    --panel: #ffffff;
+    --line: #ddd6c8;
+    --line-strong: #c4bba9;
+    --text: #1b1f24;
+    --muted: #5d6670;
+    --brass: #a8731c;
+    --brass-deep: #7f5612;
+    --brass-ink: #fffaf0;
+    --brass-soft: rgba(168,115,28,0.10);
+    --warn: #b4521f;
+    --shadow: 0 18px 40px rgba(60,40,10,0.10);
+    color-scheme: light;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { font-family: var(--body); font-size: 17px; line-height: 1.6; color: var(--text); background: var(--ink); -webkit-font-smoothing: antialiased; }
+a { color: var(--brass); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; border-radius: 3px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.05; text-wrap: balance; font-weight: 600; }
+p { max-width: 68ch; }
+p + p { margin-top: 12px; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+.eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); }
+
+.nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--ink) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.brand { font-family: var(--display); font-weight: 700; font-size: 1.5rem; letter-spacing: 0.06em; color: var(--text); }
+.brand:hover { text-decoration: none; }
+.nav-links { display: flex; gap: 20px; list-style: none; flex-wrap: wrap; }
+.nav-links a { color: var(--muted); font-size: 0.95rem; font-weight: 600; }
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+
+.hero { padding: 56px 0 40px; border-bottom: 1px solid var(--line); background: radial-gradient(ellipse 60% 50% at 80% 0%, var(--brass-soft), transparent 70%); }
+.hero h1 { font-size: clamp(2.8rem, 8vw, 4.6rem); margin: 10px 0 14px; letter-spacing: 0.01em; }
+.lede { font-size: 1.25rem; max-width: 50ch; }
+.sub { color: var(--muted); margin-top: 10px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 6px; font-weight: 600; font-size: 0.98rem; border: 1px solid transparent; }
+.btn:hover { text-decoration: none; }
+.btn-brass { background: var(--brass); color: var(--brass-ink); }
+.btn-brass:hover { background: var(--brass-deep); color: #fff; }
+.btn-ghost { border-color: var(--line-strong); color: var(--text); }
+.btn-ghost:hover { border-color: var(--brass); color: var(--brass); }
+
+section { padding: 48px 0; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: none; }
+.sec-head { margin-bottom: 20px; }
+.sec-head h2 { font-size: 2.1rem; letter-spacing: 0.01em; }
+.sec-head .step { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); display: block; margin-bottom: 6px; }
+
+.flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 22px; list-style: none; counter-reset: f; }
+.flow li { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 14px 12px; font-size: 0.9rem; color: var(--muted); counter-increment: f; }
+.flow li::before { content: counter(f); display: block; font-family: var(--mono); color: var(--brass); font-size: 0.78rem; margin-bottom: 4px; }
+.flow li b { display: block; color: var(--text); font-family: var(--display); font-size: 1.15rem; font-weight: 600; margin-bottom: 2px; }
+
+.rules { list-style: none; display: grid; gap: 8px; margin-top: 14px; }
+.rules li { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 16px; color: var(--muted); font-size: 0.98rem; }
+.rules li b { color: var(--text); font-weight: 600; }
+
+pre { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--brass); border-radius: 8px; padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 0.8rem; line-height: 1.55; margin: 14px 0; max-width: 100%; }
+code { font-family: var(--mono); font-size: 0.86em; background: var(--brass-soft); border-radius: 4px; padding: 1px 6px; }
+pre code { background: none; padding: 0; font-size: inherit; }
+.note { border: 1px solid var(--line-strong); border-left: 4px solid var(--brass); border-radius: 6px; padding: 12px 16px; background: var(--panel); margin-top: 14px; color: var(--muted); font-size: 0.97rem; max-width: 68ch; }
+.note b { color: var(--text); }
+.warn { border-color: var(--warn); border-left-color: var(--warn); }
+.warn b { color: var(--warn); }
+ol.steps { margin: 12px 0 0 22px; display: grid; gap: 8px; max-width: 68ch; }
+ol.steps li::marker { color: var(--brass); font-family: var(--mono); }
+ul.plain { margin: 12px 0 0 22px; display: grid; gap: 6px; max-width: 68ch; }
+ul.plain li::marker { color: var(--brass); }
+
+footer { border-top: 1px solid var(--line); padding: 32px 0 44px; color: var(--muted); font-size: 0.92rem; }
+footer .row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+footer a { color: var(--text); }
+
+@media (max-width: 760px) {
+  .flow { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 520px) {
+  .flow { grid-template-columns: 1fr; }
+  .hero { padding: 40px 0 28px; }
+  .sec-head h2 { font-size: 1.85rem; }
+}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../" class="brand" aria-label="N9HO home">N9HO</a>
+    <ul class="nav-links">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#server">Server</a></li>
+      <li><a href="#shortcut">Shortcut</a></li>
+      <li><a href="#banner">Banner</a></li>
+      <li><a href="#qrz">QRZ</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow">Bench project &middot; how it works</div>
+    <h1>QRZ Setup Photo</h1>
+    <p class="lede">During a POTA activation I send a photo of my setup from my iPhone, and it shows up on my QRZ page with a live ON AIR banner above it.</p>
+    <p class="sub">This page walks through how I built it, so someone comfortable with a Linux command line can follow along. It works for me, and I am still putting field time on it. I have trimmed the code to the parts that matter, so treat the snippets as the idea, not a drop-in copy of my files.</p>
+    <div class="note"><b>Just for fun.</b> I built this because it was fun, and I post write-ups like this to give you ideas for your own projects. I can't help you build your own version or troubleshoot it, so please read this as inspiration, not a support page. Have fun with it, and 73!</div>
+    <div class="hero-actions">
+      <a class="btn btn-brass" href="https://www.qrz.com/db/N9HO" target="_blank" rel="noopener">See it on my QRZ page &rarr;</a>
+      <a class="btn btn-ghost" href="#overview">Start reading</a>
+    </div>
+  </div>
+</header>
+
+<section id="overview">
+  <div class="wrap">
+    <div class="sec-head"><h2>The idea</h2></div>
+    <p>I wanted the photo on my QRZ page to be the setup I am using right now, without logging in to QRZ from a picnic table. One tap in the share sheet should do it. The same photo upload also tells a small server to start watching for my spot, so the page can show whether I am on the air.</p>
+    <ol class="flow">
+      <li><b>iPhone</b>Share the photo to a Shortcut</li>
+      <li><b>My server</b>Small Python app saves it</li>
+      <li><b>POTA</b>Server checks spots every 5 minutes</li>
+      <li><b>Banner</b>Flickering ON AIR, or dim OFF AIR</li>
+      <li><b>QRZ</b>Bio embeds banner and photo</li>
+    </ol>
+    <p style="margin-top:22px">The rules I settled on for the banner:</p>
+    <ul class="rules">
+      <li><b>Watching starts with a photo upload.</b> No upload, no polling.</li>
+      <li><b>ON AIR</b> while POTA has a spot for my callsign from the last 30 minutes.</li>
+      <li><b>OFF AIR</b> after 30 minutes with no spot. If the newest spot's comment says QRT, I wait 10 more minutes for a newer spot, then go off.</li>
+      <li><b>Photo before the first spot:</b> wait up to 30 minutes for a spot before giving up.</li>
+      <li><b>Off air</b> keeps showing the last park, mode and frequency, so people know what the photo is.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="server">
+  <div class="wrap">
+    <div class="sec-head"><span class="step">Part 1</span><h2>The server</h2></div>
+    <p>You need a Linux machine that stays on. Mine is a small mini PC in the house. It needs Docker and a free Tailscale account. Nothing here needs a cloud server or a domain name.</p>
+
+    <h3 style="font-size:1.4rem;margin-top:26px">The upload endpoint</h3>
+    <p>The app is Flask with Pillow. The Shortcut posts the JPEG as the request body with a secret token in a header. The server checks the token, shrinks the image, and saves it. Saving a fresh JPEG with Pillow also throws away the EXIF data, so the GPS location that the phone camera recorded never reaches the public page.</p>
+<pre><code>import os, io, hmac
+from flask import Flask, request, abort, send_file
+from PIL import Image
+
+TOKEN = os.environ["UPLOAD_TOKEN"]
+app = Flask(__name__)
+
+@app.post("/upload")
+def upload():
+    sent = request.headers.get("X-Token", "")
+    if not hmac.compare_digest(sent, TOKEN):
+        abort(401)
+    img = Image.open(io.BytesIO(request.get_data())).convert("RGB")
+    img.thumbnail((1600, 1600))          # keep it small
+    img.save("/data/latest.jpg", "JPEG", quality=85)   # no EXIF written
+    return "ok"
+
+@app.get("/latest.jpg")
+def latest():
+    return send_file("/data/latest.jpg", mimetype="image/jpeg")</code></pre>
+
+    <h3 style="font-size:1.4rem;margin-top:26px">Run it in Docker</h3>
+    <p>A tiny image is enough. I use gunicorn instead of Flask's built-in server, and I install a font package so Pillow can draw text for the banner later.</p>
+<pre><code>FROM python:3.12-slim
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends fonts-dejavu-core &amp;&amp; rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir flask pillow gunicorn
+WORKDIR /app
+COPY app.py .
+CMD ["gunicorn", "-b", "0.0.0.0:8090", "-w", "1", "--threads", "4", "app:app"]</code></pre>
+    <p>Make a token, build the image, and start the container. The port is bound to <code>127.0.0.1</code> only, so nothing can reach the app except through Tailscale in the next step.</p>
+<pre><code>mkdir -p ~/qrz-photo/data &amp;&amp; cd ~/qrz-photo
+openssl rand -hex 24 &gt; token.txt
+
+docker build -t qrz-photo .
+docker run -d --name qrz-photo --restart unless-stopped \
+  -p 127.0.0.1:8090:8090 \
+  -e UPLOAD_TOKEN="$(cat token.txt)" \
+  -e WATCH_CALL="N9HO" \
+  -v ~/qrz-photo/data:/data qrz-photo</code></pre>
+    <p>Keep the token private. It is the only thing that stops a stranger from replacing your photo.</p>
+
+    <h3 style="font-size:1.4rem;margin-top:26px">Put it on the internet with Tailscale Funnel</h3>
+    <p>Funnel gives a local port a public HTTPS address with a real certificate, with no router changes and no port forwarding. The first time, you may need to turn Funnel on for your tailnet in the Tailscale admin console.</p>
+<pre><code>sudo tailscale funnel --bg 8090
+tailscale funnel status</code></pre>
+    <p>The status command prints your public address, which looks like <code>https://your-box.your-tailnet.ts.net</code>. Test it from outside your house with a phone on cellular. A request without the token should come back <code>401</code>.</p>
+    <div class="note"><b>Testing tip.</b> Tailscale routes your own devices straight to the box over the tailnet, so a test from a phone with Tailscale turned on does not prove the public path works. Turn Tailscale off on the phone when you check.</div>
+  </div>
+</section>
+
+<section id="shortcut">
+  <div class="wrap">
+    <div class="sec-head"><span class="step">Part 2</span><h2>The iPhone Shortcut</h2></div>
+    <p>The Shortcut shows up in the share sheet for photos. Build it in the Shortcuts app:</p>
+    <ol class="steps">
+      <li>Create a new Shortcut and turn on <b>Show in Share Sheet</b>, accepting <b>Images</b>.</li>
+      <li>Add <b>Convert Image</b> and set it to <b>JPEG</b>. iPhones save HEIC by default, and Pillow does not read it out of the box.</li>
+      <li>Add <b>Get Contents of URL</b>. Set the URL to your Funnel address followed by <code>/upload</code>. Set the method to <b>POST</b>.</li>
+      <li>Under Headers, add a key named <code>X-Token</code> with your token as the value.</li>
+      <li>Set Request Body to <b>File</b> and choose the converted image.</li>
+      <li>Add <b>Show Notification</b> so you see "ok" when it lands.</li>
+    </ol>
+    <div class="note warn"><b>Two things that tripped me up.</b> The Method, Headers and Request Body rows did not appear until I left the Shortcut editor and reopened it. And I first typed the token into the value field without a key name, so the header never got sent. The key has to read <code>X-Token</code>.</div>
+  </div>
+</section>
+
+<section id="watcher">
+  <div class="wrap">
+    <div class="sec-head"><span class="step">Part 3</span><h2>Watching POTA for my spot</h2></div>
+    <p>POTA publishes current activator spots as plain JSON, with no login. Spots from the Reverse Beacon Network show up there too, so a CW activation gets picked up even if nobody spots me by hand. One call returns everything:</p>
+<pre><code>https://api.pota.app/spot/activator</code></pre>
+    <p>Each spot has the fields I need: <code>activator</code>, <code>reference</code>, <code>name</code> (the park name), <code>frequency</code> in kHz as a string, <code>mode</code>, <code>spotTime</code> in UTC, <code>comments</code>, and <code>source</code>. The app picks out my callsign, including portable forms like <code>N9HO/P</code>, and takes the newest spot:</p>
+<pre><code>import json, re, urllib.request
+
+CALL = "N9HO"
+URL = "https://api.pota.app/spot/activator"
+
+def latest_spot():
+    with urllib.request.urlopen(URL, timeout=15) as r:
+        spots = json.load(r)
+    mine = [s for s in spots
+            if CALL in str(s.get("activator", "")).upper().split("/")]
+    return max(mine, key=lambda s: s["spotTime"], default=None)
+
+def says_qrt(spot):
+    return bool(re.search(r"\bQRT\b", spot.get("comments") or "", re.I))</code></pre>
+    <p>A background thread runs this every 300 seconds after an upload and keeps a small state record (status, last spot time, QRT time, and the park info) in a JSON file in the data folder, so a restart does not lose it. The state moves between three values: <code>off</code>, <code>watching</code> (photo received, no spot yet), and <code>on</code>. The rules from the top of this page are the only logic.</p>
+    <div class="note"><b>Testing tip.</b> Test with a callsign that is on the air right now. I first tested with a callsign that only showed up as a spotter, and it correctly stayed on "watching" forever. Set <code>WATCH_CALL</code> to an active activator, confirm the banner flips, then set it back to yours.</div>
+  </div>
+</section>
+
+<section id="banner">
+  <div class="wrap">
+    <div class="sec-head"><span class="step">Part 4</span><h2>The banner</h2></div>
+    <p>The banner is a 600 by 130 pixel GIF that Pillow draws on request. On air, it has a red light, "ON AIR", my callsign, the park reference and name, and a line with mode, frequency and band. The flicker is a handful of frames with different glow strength, saved as a looping animated GIF. Off air, it is one dim frame with "OFF AIR" and a "Last:" line for the most recent park.</p>
+<pre><code>frames = [draw_frame(True, glow, info) for glow in GLOW]
+frames[0].save(buf, "GIF", save_all=True,
+               append_images=frames[1:], duration=120, loop=0)</code></pre>
+    <p>The server exposes the banner at <code>/status.gif</code> and the raw state at <code>/status.json</code>, which is handy for debugging. A GIF works well here because it needs no JavaScript, and QRZ will not run any.</p>
+    <p>Then one more route ties it together: a small HTML page that shows the banner above the photo, and reloads itself every five minutes.</p>
+<pre><code>&lt;!doctype html&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;
+&lt;meta http-equiv="refresh" content="300"&gt;
+&lt;style&gt;
+html,body{margin:0;background:#111114;}
+.wrap{width:600px;margin:0 auto;}
+img{display:block;width:600px;}
+.photo{margin-top:8px;height:450px;display:flex;align-items:center;justify-content:center;background:#0b0b0d;}
+.photo img{max-width:600px;max-height:450px;width:auto;height:auto;}
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class="wrap"&gt;
+&lt;img src="/status.gif" alt="Station status" width="600" height="130"&gt;
+&lt;div class="photo"&gt;&lt;img src="/latest.jpg" alt="POTA setup"&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+    <p>Serve that at <code>/card</code> with a <code>Cache-Control: no-cache</code> header so visitors always get the current photo.</p>
+  </div>
+</section>
+
+<section id="qrz">
+  <div class="wrap">
+    <div class="sec-head"><span class="step">Part 5</span><h2>Getting it onto QRZ</h2></div>
+    <p>This is the part with a catch. QRZ's bio editor wants images hosted on QRZ, and it strips ordinary <code>&lt;img&gt;</code> tags that point at other sites. A live banner cannot be a QRZ-hosted image, because it has to change.</p>
+    <p>What does survive is an <code>iframe</code>. QRZ renders your bio inside a sandboxed frame, and it keeps an iframe that points at another page. Other hams use the same trick for Club Log and HRDLog widgets. In the bio editor, click <b>Source</b> and paste this at the top, using your own Funnel address:</p>
+<pre><code>&lt;p style="text-align:center"&gt;&lt;iframe src="https://your-box.your-tailnet.ts.net/card" width="620" height="600" frameborder="0" scrolling="no"&gt;&lt;/iframe&gt;&lt;/p&gt;</code></pre>
+    <p>Save, then view your public page. The card sits above the rest of your bio, and the banner and photo update on their own.</p>
+    <div class="note warn"><b>Be honest about the risk.</b> This leans on how QRZ renders bios today, and it is outside what their editor rules describe. QRZ could change it. If they block the frame, nothing breaks on your server. The card still works at its own address, and you can link to it from your bio instead.</div>
+  </div>
+</section>
+
+<section id="notes">
+  <div class="wrap">
+    <div class="sec-head"><h2>Things I would tell you before you start</h2></div>
+    <ul class="plain">
+      <li>The photo upload is the trigger. If you are on the air and nothing shows, send a photo and give it up to five minutes.</li>
+      <li>CW and digital activations get spotted automatically once you declare them on pota.app. For SSB you need to self-spot.</li>
+      <li>The token is the only lock. Use a long random one, and do not paste it anywhere public.</li>
+      <li>Strip location data from photos you publish. Re-saving through Pillow does it for you here.</li>
+      <li>Keep the container bound to localhost and publish it only through Funnel, so there is one door in.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="row">
+      <span><a href="../">&larr; Back to n9ho.com</a></span>
+      <span>Built for fun, shared for ideas &middot; 73 de N9HO</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
