@@ -115,7 +115,8 @@ p { max-width: 62ch; }
 .callsign { font-family: var(--display); font-weight: 700; font-size: clamp(5rem, 14vw, 9.5rem); line-height: 0.9; letter-spacing: 0.02em; color: var(--text); margin: 8px 0 18px; }
 .callsign span { color: var(--brass); }
 .morse-line { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 26px; }
-.morse-bar { display: flex; align-items: center; height: 14px; }
+.morse-bar { display: flex; align-items: center; height: 14px; max-width: 100%; min-width: 0; }
+.hero-grid > * { min-width: 0; }
 .morse-bar i { display: block; height: 10px; background: var(--line-strong); border-radius: 2px; transition: background 80ms linear, box-shadow 80ms linear; }
 .morse-bar i.dit { width: 10px; }
 .morse-bar i.dah { width: 30px; }
@@ -255,6 +256,15 @@ footer { border-top: 1px solid var(--line); padding: 40px 0 48px; color: var(--m
   .chart { grid-template-columns: repeat(4, 1fr); }
   .foot { grid-template-columns: 1fr; }
 }
+
+/* Latest update */
+.latest { padding: 36px 0; border-bottom: 1px solid var(--line); }
+.latest-card { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--brass); border-radius: 8px; padding: 22px 26px; }
+.latest-meta { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.latest h2 { font-size: 1.9rem; margin: 6px 0 8px; }
+.latest p { color: var(--muted); max-width: 70ch; }
+.latest .go { display: inline-block; margin-top: 12px; font-weight: 600; }
+.nav-links a[aria-current="page"] { color: var(--text); }
 </style>
 </head>
 <body>
@@ -266,7 +276,7 @@ footer { border-top: 1px solid var(--line); padding: 40px 0 48px; color: var(--m
     </a>
     <button class="menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">Menu</button>
     <ul class="nav-links">
-      <li><a href="#building">Projects</a></li>
+      <li><a href="projects/">Projects</a></li>
       <li><a href="#air">On the air</a></li>
       <li><a href="#cw">Learn CW</a></li>
       <li><a href="#watch">Watch</a></li>
@@ -310,6 +320,17 @@ footer { border-top: 1px solid var(--line); padding: 40px 0 48px; color: var(--m
     </aside>
   </div>
 </header>
+
+<section id="latest" class="latest">
+  <div class="wrap">
+    <div class="latest-card">
+      <div class="latest-meta"><span class="eyebrow">Latest update</span><time datetime="2026-11-14">Nov 14, 2026</time></div>
+      <h2>A live ON AIR banner on my QRZ page</h2>
+      <p>During a POTA activation I send a photo of my setup from my iPhone, and it shows up on my QRZ page. A banner above it flickers ON AIR while POTA has a spot for me and goes dim with my last park when I am off air. I wrote up how it works, in case it gives you ideas for your own station.</p>
+      <a class="go" href="qrz-photo/">Read the write-up &rarr;</a>
+    </div>
+  </div>
+</section>
 
 <section id="building">
   <div class="wrap">
