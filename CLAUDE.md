@@ -10,14 +10,14 @@ Justin attaches this repo from his other Claude projects and says something like
 
 1. Read this file and the relevant part of `index.html`.
 2. Draft the entry from what you know about the project in that conversation.
-3. **Show Justin the entry (and which section it goes in) before committing or pushing.** Only commit and push after he approves.
+3. **Show Justin the entry (and which section it goes in) before committing or pushing.** Include the new Latest update card in that same preview (see below). Only commit and push after he approves.
 4. Make the smallest edit that works. Don't restyle or reorganize the page.
 
 ## Page structure (`index.html`)
 
 Sections, in order: hero (callsign, "Station" panel), `#latest` (Latest update), `#building`, `#air`, `#cw`, `#watch`, footer (which has its own "Projects" link list).
 
-The site has these pages: `index.html` (home), `projects/index.html` (every project: the cards plus the bench rows), `qrz-photo/index.html` (a write-up), and `wfd/index.html`. The sticky nav bar is the same markup on the home, projects and write-up pages. Its Projects link goes to `projects/`, and on sub-pages its other links are prefixed with `../`. Copy the nav from `index.html` when you make a new page.
+The site has these pages: `index.html` (home), `projects/index.html` (every project: the cards plus the bench rows), `qrz-photo/index.html` and `big-homie-bot/index.html` (write-ups), and `wfd/index.html`. The sticky nav bar is the same markup on the home, projects and write-up pages. Its Projects link goes to `projects/`, and on sub-pages its other links are prefixed with `../`. Copy the nav from `index.html` when you make a new page.
 
 Where new things go:
 
@@ -30,7 +30,7 @@ Where new things go:
 - If a project has several pages of write-up, give it its own folder like `wfd/` (own `index.html`) and link to it from a card or bench row. Reuse the CSS variables and look from the main page.
 - If you add a card or bench row for something notable, also check the footer "Projects" list and add a matching link if the others are there.
 - **Every new project card or bench row goes in two places:** `index.html` and `projects/index.html`. On the projects page, relative links need the `../` prefix.
-- **Latest update (`#latest`):** one card with a date, a short title, a few plain sentences, and a link. When Justin adds something notable (a project, a write-up), replace its content with the new item. Use today's date. Don't invent updates he didn't ask for.
+- **Latest update (`#latest`):** one card on the home page with a date, a short title, a few plain sentences, and a link. **Always update it as part of the same change** whenever Justin adds a project card, a bench row, or a write-up. Don't ask whether to update it, and don't leave it for a follow-up. Draft the new card along with the entry, show both in the same preview, and commit and push them together once he approves. Use today's date and link to the new item (its write-up if it has one). Don't invent updates for anything he didn't ask to add.
 
 ## Voice
 
