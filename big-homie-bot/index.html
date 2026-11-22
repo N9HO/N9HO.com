@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Homie Bot: how it works | N9HO</title>
+<meta name="description" content="How the Brass Knuckle Gang Discord bot works: it checks a new member's nickname against the club roster, hands the admins an approve button, and takes bug reports with a /bug command.">
+<meta property="og:title" content="Big Homie Bot: how it works | N9HO">
+<meta property="og:description" content="A Discord bot that checks new Brass Knuckle Gang members against the roster and takes bug reports.">
+<meta property="og:type" content="article">
+<link rel="canonical" href="https://www.n9ho.com/big-homie-bot/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23101418'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial Narrow,Arial' font-weight='700' font-size='30' fill='%23d9a441'%3EN9%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #101418;
+  --panel: #171d24;
+  --line: #2a333d;
+  --line-strong: #3a4552;
+  --text: #e7e2d6;
+  --muted: #9aa3ad;
+  --brass: #d9a441;
+  --brass-deep: #b07f24;
+  --brass-ink: #1a1408;
+  --brass-soft: rgba(217,164,65,0.12);
+  --warn: #e0875a;
+  --shadow: 0 18px 40px rgba(0,0,0,0.35);
+  --display: 'Barlow Condensed', 'Arial Narrow', Impact, sans-serif;
+  --body: 'Source Sans 3', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --ink: #f3efe6;
+    --panel: #ffffff;
+    --line: #ddd6c8;
+    --line-strong: #c4bba9;
+    --text: #1b1f24;
+    --muted: #5d6670;
+    --brass: #a8731c;
+    --brass-deep: #7f5612;
+    --brass-ink: #fffaf0;
+    --brass-soft: rgba(168,115,28,0.10);
+    --warn: #b4521f;
+    --shadow: 0 18px 40px rgba(60,40,10,0.10);
+    color-scheme: light;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { font-family: var(--body); font-size: 17px; line-height: 1.6; color: var(--text); background: var(--ink); -webkit-font-smoothing: antialiased; }
+a { color: var(--brass); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; border-radius: 3px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.05; text-wrap: balance; font-weight: 600; }
+p { max-width: 68ch; }
+p + p { margin-top: 12px; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+.eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); }
+
+
+.hero { padding: 56px 0 40px; border-bottom: 1px solid var(--line); background: radial-gradient(ellipse 60% 50% at 80% 0%, var(--brass-soft), transparent 70%); }
+.hero h1 { font-size: clamp(2.8rem, 8vw, 4.6rem); margin: 10px 0 14px; letter-spacing: 0.01em; }
+.lede { font-size: 1.25rem; max-width: 50ch; }
+.sub { color: var(--muted); margin-top: 10px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 6px; font-weight: 600; font-size: 0.98rem; border: 1px solid transparent; }
+.btn:hover { text-decoration: none; }
+.btn-brass { background: var(--brass); color: var(--brass-ink); }
+.btn-brass:hover { background: var(--brass-deep); color: #fff; }
+.btn-ghost { border-color: var(--line-strong); color: var(--text); }
+.btn-ghost:hover { border-color: var(--brass); color: var(--brass); }
+
+section { padding: 48px 0; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: none; }
+.sec-head { margin-bottom: 20px; }
+.sec-head h2 { font-size: 2.1rem; letter-spacing: 0.01em; }
+.sec-head .step { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); display: block; margin-bottom: 6px; }
+
+.flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 22px; list-style: none; counter-reset: f; }
+.flow li { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 14px 12px; font-size: 0.9rem; color: var(--muted); counter-increment: f; }
+.flow li::before { content: counter(f); display: block; font-family: var(--mono); color: var(--brass); font-size: 0.78rem; margin-bottom: 4px; }
+.flow li b { display: block; color: var(--text); font-family: var(--display); font-size: 1.15rem; font-weight: 600; margin-bottom: 2px; }
+
+.rules { list-style: none; display: grid; gap: 8px; margin-top: 14px; }
+.rules li { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 16px; color: var(--muted); font-size: 0.98rem; }
+.rules li b { color: var(--text); font-weight: 600; }
+
+pre { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--brass); border-radius: 8px; padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 0.8rem; line-height: 1.55; margin: 14px 0; max-width: 100%; }
+code { font-family: var(--mono); font-size: 0.86em; background: var(--brass-soft); border-radius: 4px; padding: 1px 6px; }
+pre code { background: none; padding: 0; font-size: inherit; }
+.note { border: 1px solid var(--line-strong); border-left: 4px solid var(--brass); border-radius: 6px; padding: 12px 16px; background: var(--panel); margin-top: 14px; color: var(--muted); font-size: 0.97rem; max-width: 68ch; }
+.note b { color: var(--text); }
+.warn { border-color: var(--warn); border-left-color: var(--warn); }
+.warn b { color: var(--warn); }
+ol.steps { margin: 12px 0 0 22px; display: grid; gap: 8px; max-width: 68ch; }
+ol.steps li::marker { color: var(--brass); font-family: var(--mono); }
+ul.plain { margin: 12px 0 0 22px; display: grid; gap: 6px; max-width: 68ch; }
+ul.plain li::marker { color: var(--brass); }
+
+footer { border-top: 1px solid var(--line); padding: 32px 0 44px; color: var(--muted); font-size: 0.92rem; }
+footer .row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+footer a { color: var(--text); }
+
+@media (max-width: 760px) {
+  .flow { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 520px) {
+  .flow { grid-template-columns: 1fr; }
+  .hero { padding: 40px 0 28px; }
+  .sec-head h2 { font-size: 1.85rem; }
+}
+.nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--ink) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav-inner { max-width: 1040px; margin: 0 auto; padding: 0 24px; height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { font-family: var(--display); font-weight: 700; font-size: 1.5rem; letter-spacing: 0.06em; color: var(--text); display: flex; align-items: center; gap: 10px; }
+.brand:hover { text-decoration: none; }
+.brand svg { width: 22px; height: 22px; }
+.nav-links { display: flex; gap: 26px; list-style: none; align-items: center; }
+.nav-links a { color: var(--muted); font-size: 0.95rem; font-weight: 600; }
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+.nav-links a.yt { color: var(--text); display: inline-flex; align-items: center; gap: 6px; }
+.nav-links a.yt svg { width: 18px; height: 18px; fill: #e53935; }
+.menu-btn { display: none; background: none; border: 1px solid var(--line); color: var(--text); font: inherit; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+.nav-links a[aria-current="page"] { color: var(--text); }
+@media (max-width: 640px) {
+  .nav-links { display: none; position: absolute; top: 58px; left: 0; right: 0; flex-direction: column; align-items: flex-start; gap: 0; background: var(--panel); border-bottom: 1px solid var(--line); padding: 8px 24px; }
+  .nav-links li { width: 100%; }
+  .nav-links a { display: block; padding: 12px 0; }
+  .nav-links.open { display: flex; }
+  .menu-btn { display: block; }
+}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../" class="brand" aria-label="N9HO home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v9"/><path d="M8 7l4-4 4 4"/><path d="M12 12l-6 9"/><path d="M12 12l6 9"/><path d="M6 21h12"/></svg>
+      N9HO
+    </a>
+    <button class="menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">Menu</button>
+    <ul class="nav-links">
+      <li><a href="../projects/">Projects</a></li>
+      <li><a href="../#air">On the air</a></li>
+      <li><a href="../#cw">Learn CW</a></li>
+      <li><a href="../#watch">Watch</a></li>
+      <li><a class="yt" href="https://www.youtube.com/@JustinN9HO" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4L15.8 12l-6.3 3.6z"/></svg>YouTube</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow">Bench project &middot; how it works</div>
+    <h1>Big Homie Bot</h1>
+    <p class="lede">The Discord bot for the Brass Knuckle Gang server. It checks a new member against the club roster so an admin can approve them with one tap, and it takes bug reports.</p>
+    <p class="sub">This page walks through how it works, so someone comfortable with a little Python and a Linux command line can follow along. It has been running in the gang's Discord since late October. I have trimmed the code to the parts that matter, so treat the snippets as the idea, not a drop-in copy of my files.</p>
+    <div class="note"><b>Just for fun.</b> I built this because it was fun, and I post write-ups like this to give you ideas for your own projects. I can't help you build your own version or troubleshoot it, so please read this as inspiration, not a support page. Have fun with it, and 73!</div>
+    <div class="hero-actions">
+      <a class="btn btn-brass" href="https://bkg.club" target="_blank" rel="noopener">Meet the gang at bkg.club &rarr;</a>
+      <a class="btn btn-ghost" href="#overview">Start reading</a>
+    </div>
+  </div>
+</header>
+
+<section id="overview">
+  <div class="wrap">
+    <div class="sec-head"><h2>The idea</h2></div>
+    <p>Everyone in the gang's Discord wears the same nickname format: first name, callsign, gang number, and an OG tag if they hold one. New people come in with a starter role called Lil' Homies and get moved up to Homie once someone confirms they are on the roster. With well over a thousand members on that roster, looking each one up by hand is slow and easy to get wrong.</p>
+    <p>So the bot does the looking up. The member sets their nickname and types one command. The bot checks the nickname against the roster and hands an admin a finished request with buttons on it.</p>
+    <ol class="flow">
+      <li><b>Nickname</b>Member sets it in the gang format</li>
+      <li><b>/ready</b>Member runs one command</li>
+      <li><b>Roster</b>Bot checks callsign, number and name</li>
+      <li><b>Admins</b>Request posts with Approve and Deny</li>
+      <li><b>Role</b>On approval, Lil' Homies becomes Homie</li>
+    </ol>
+    <p style="margin-top:22px">The rules I settled on:</p>
+    <ul class="rules">
+      <li><b>The bot never approves anyone.</b> It checks and reports. A person presses the button.</li>
+      <li><b>The bot never decides an OG tag.</b> If OG is involved, the admin picks "Approve + OG" or "Approve without OG".</li>
+      <li><b>One callsign, one Discord account.</b> A callsign that is already linked to another member in the server gets stopped and flagged.</li>
+      <li><b>Change the nickname, start over.</b> If the nickname changes after it was submitted, the request is void.</li>
+      <li><b>A bad roster download never replaces a good one.</b> The bot keeps the last copy that made sense.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="nickname">
+  <div class="wrap">
+    <div class="sec-head"><span class="step">Part 1</span><h2>Checking the nickname</h2></div>
+    <p>The format is strict on purpose, so one pattern can read it. Mine looks like <code>Justin | N9HO | #32 | AL OG</code>. A member without an OG tag stops after the number.</p>
+<pre><code>NICK_RE = re.compile(
+    r"^(?P&lt;name&gt;[^\W\d_]+(?:['’\-][^\W\d_]+)*)"
+    r" \| (?P&lt;call&gt;[A-Za-z0-9]{3,10})"
+    r" \| #(?P&lt;num&gt;[0-9]+)"
+    r"(?P&lt;ogs&gt;(?: \| [A-Za-z]{2,5}(?:/[A-Za-z]{2,5})* OG)*)$"
+)</code></pre>
+    <p>If the nickname does not fit, the bot does not just say no. It tells the member what is off: a missing space beside a <code>|</code>, a number without the <code>#</code>, a callsign in lower case. That reply is private, so nobody gets corrected in front of the whole server.</p>
+    <p>If it does fit, three things have to agree with the roster: the callsign is on it, the gang number belongs to that callsign, and the first name matches. Names with accents also match their plain spelling, so nobody has to hunt for a special character on a phone keyboard.</p>
+    <div class="note"><b>Testing tip.</b> I kept the checking code in its own file with no Discord in it. That means I can test a nickname from the command line and see exactly what the bot would say, without touching the server.</div>
+  </div>
+</section>
+
+<section id="roster">
+  <div class="wrap">
+    <div class="sec-head"><span class="step">Part 2</span><h2>Keeping the roster fresh</h2></div>
+    <p>The club publishes its roster as a JSON feed, the same data that draws the roster on bkg.club. The bot downloads it once an hour and saves a copy to disk, so a restart or a feed outage does not leave it empty-handed.</p>
+    <p>A download only replaces the saved copy if it looks sane. If the new roster is tiny, or has lost more than a fifth of its members since the last one, something is wrong with the feed and the bot keeps what it had.</p>
+<pre><code>if new.member_count &lt; 100 or (old and new.member_count &lt; old.member_count * 0.8):
+    raise RuntimeError("roster looks wrong; keeping the old copy")</code></pre>
+    <p>After three failed refreshes in a row it posts a warning in the admin channel. And if a member's callsign is not found, the bot pulls a fresh roster once before answering, since brand new members are the ones most likely to be running the command. That extra download is limited to once a minute.</p>
+  </div>
+</section>
+
+<section id="admins">
+  <div class="wrap">
+    <div class="sec-head"><span class="step">Part 3</span><h2>What the admins see</h2></div>
+    <p>A passing request lands in a private admin channel as one card: the nickname the member set, the roster entry with a link to their QRZ page, the checks that passed, and anything that needs a second look. Under it are the buttons. Deny opens a small form for a reason, and the bot sends that reason to the member so they know what to fix.</p>
+    <p>The buttons have to keep working after the bot restarts, even on a request posted days ago. Discord's Python library handles that if each button carries its own ID with the member's Discord ID inside it:</p>
+<pre><code>class ApproveButton(discord.ui.DynamicItem[discord.ui.Button],
+                    template=r"bkg:approve:(?P&lt;uid&gt;[0-9]+)"):
+    def __init__(self, user_id):
+        super().__init__(discord.ui.Button(
+            label="Approve", style=discord.ButtonStyle.success,
+            custom_id=f"bkg:approve:{user_id}"))
+        self.user_id = user_id
+
+    @classmethod
+    async def from_custom_id(cls, interaction, item, match):
+        return cls(int(match["uid"]))</code></pre>
+    <p>When an admin approves, the bot checks one more time that the nickname is still the one that was submitted, adds Homie, removes Lil' Homies, marks the card with who approved it, and sends the member a welcome message. Pending requests and callsign links live in a small JSON file next to the bot.</p>
+  </div>
+</section>
+
+<section id="bug">
+  <div class="wrap">
+    <div class="sec-head"><span class="step">Part 4</span><h2>The /bug command</h2></div>
+    <p>The gang has a website, a game and a few tools now, and things break. I wanted one place for reports to land. Anyone in the server can type <code>/bug</code> and get a two-box form: what went wrong, and where. The bot posts the report in the admin channel, pings the admin role, and thanks the reporter privately.</p>
+<pre><code>content = f"&lt;@&amp;{ping_role_id}&gt; new bug report."
+mentions = discord.AllowedMentions(
+    everyone=False, users=False, roles=[discord.Object(id=ping_role_id)])
+await channel.send(content=content, embed=embed, allowed_mentions=mentions)</code></pre>
+    <p>Two small guards matter here. The only thing the message is allowed to ping is that one role, so nothing typed into a report can ping the whole server. And each person can send one report a minute, so the admins cannot be ping-spammed.</p>
+    <p>I thought about having an AI model summarize each report and ask "is this right?" before sending it. I left it out. The plain form does the job, costs nothing, and has one less thing to break.</p>
+  </div>
+</section>
+
+<section id="running">
+  <div class="wrap">
+    <div class="sec-head"><span class="step">Part 5</span><h2>Keeping it running</h2></div>
+    <p>The bot is two Python libraries, <code>discord.py</code> and <code>aiohttp</code>, in a virtual environment on a small Linux box at home. It does not need Docker. A systemd service starts it at boot and brings it back ten seconds after any crash:</p>
+<pre><code>[Unit]
+Description=Discord role bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=you
+WorkingDirectory=/home/you/bot
+EnvironmentFile=/home/you/bot/.env
+ExecStart=/home/you/bot/.venv/bin/python bot.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+    <p>A Discord bot connects out to Discord, the way a web browser connects out to a website. Nothing connects in, so there are no ports to open on the router and nothing new exposed to the internet.</p>
+    <div class="note warn"><b>The token is the whole key.</b> Anyone who has the bot's token can act as the bot. Mine sits in a <code>.env</code> file that only my own login can read, and that file is in <code>.gitignore</code> so it never reaches GitHub. The saved member data stays out of the repo the same way.</div>
+  </div>
+</section>
+
+<section id="notes">
+  <div class="wrap">
+    <div class="sec-head"><h2>Things I would tell you before you start</h2></div>
+    <ul class="plain">
+      <li>The bot's own role has to sit above every role it hands out in the server's role list, and it needs Manage Roles. Mine checks this at startup and says so in the log.</li>
+      <li>Keep a person in the loop. The bot checks and a human approves, so a mistake in my rules cannot hand out a role by itself.</li>
+      <li>Register commands to your one server instead of globally. They show up right away, which makes testing much less confusing.</li>
+      <li>Write the <code>.gitignore</code> before the first commit, not after.</li>
+      <li>Make the bot tell people exactly what is wrong. A good error message is one less question for an admin.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="row">
+      <span><a href="../">&larr; Back to n9ho.com</a></span>
+      <span>Built for fun, shared for ideas &middot; 73 de N9HO</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
