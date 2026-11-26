@@ -157,7 +157,7 @@ footer a { color: var(--text); }
   <div class="wrap">
     <div class="eyebrow">Bench project &middot; how it works</div>
     <h1>Big Homie Bot</h1>
-    <p class="lede">The Discord bot for the Brass Knuckle Gang server. It checks a new member against the club roster so an admin can approve them with one tap, and it sorts bug reports so an admin can file them with one tap too.</p>
+    <p class="lede">The Discord bot for the Brass Knuckle Gang server. It checks a new member against the club roster so an admin can approve them with one tap, and it sorts bug reports, files them with one tap from an admin, and tells the reporter when they are fixed.</p>
     <p class="sub">This page walks through how it works, so someone comfortable with a little Python and a Linux command line can follow along. It has been running in the gang's Discord since late October. I have trimmed the code to the parts that matter, so treat the snippets as the idea, not a drop-in copy of my files.</p>
     <div class="note"><b>Just for fun.</b> I built this because it was fun, and I post write-ups like this to give you ideas for your own projects. I can't help you build your own version or troubleshoot it, so please read this as inspiration, not a support page. Have fun with it, and 73!</div>
     <div class="hero-actions">
@@ -240,21 +240,39 @@ footer a { color: var(--text); }
 <section id="bug">
   <div class="wrap">
     <div class="sec-head"><span class="step">Part 4</span><h2>The /bug command</h2></div>
-    <p>The gang has a website, a membership system behind it, and this bot, and things break. I wanted one place for reports to land. Anyone in the server can type <code>/bug</code> and get a two-box form: what went wrong, and where.</p>
-    <p>My first version just posted the report in the admin channel. One of the other admins asked for more: have the bot take a first guess at which part is broken, then let an admin turn the report into a GitHub issue on the right repo. So now, before posting, the bot sends the report to a small AI model (Claude Haiku) with one question: is this the website, the backend, or Discord? It gets back a guess, a one-line reason and a short title.</p>
-    <p>The report lands in the admin channel with four buttons: File: Website, File: Backend, File: Discord bot, and Not a bug. The bot's guess is the green one. An admin presses a button, the bot opens the issue on that repo, and the post gets a link to it.</p>
+    <p>The gang has a website, a membership system behind it, and this bot, and things break. I wanted one place for reports to land, and I wanted the person who reported a bug to hear what happened to it. Anyone in the server can type <code>/bug</code> and get a two-box form: what went wrong, and where.</p>
+    <ol class="flow">
+      <li><b>/bug</b>Member fills in a short form</li>
+      <li><b>Guess</b>AI model says website, backend or Discord</li>
+      <li><b>Two posts</b>One for the admins, one in a forum for everyone</li>
+      <li><b>Filed</b>An admin taps a button, the bot opens a GitHub issue</li>
+      <li><b>Fixed</b>The bot messages the reporter when it closes</li>
+    </ol>
+
+    <h3 style="font-size:1.4rem;margin-top:26px">A first guess</h3>
+    <p>My first version just posted the report in the admin channel. One of the other admins asked for more: a first guess at which part is broken, a way to turn a report into a GitHub issue, and a thread to talk each one over. Before posting, the bot sends the report to a small AI model (Claude Haiku) with one question: is this the website, the backend, or Discord? It gets back a guess, a one-line reason and a short title.</p>
 <pre><code>area = str(data.get("area", "")).strip().lower()
 if area not in AREAS and area != "unclear":
     return None        # not one of the answers I asked for, so no guess</code></pre>
-    <p>The guards matter more than the feature:</p>
+
+    <h3 style="font-size:1.4rem;margin-top:26px">Two posts for every report</h3>
+    <p>The admins get the report in their private channel with four buttons: File: Website, File: Backend, File: Discord bot, and Not a bug. The bot's guess is the green one.</p>
+    <p>Everyone else gets it in a forum channel, where each bug is its own post. The bot tags the reporter into it so they can add a screenshot or the steps that led to the problem, and anyone who has seen the same thing can say so. Members can reply to a post but cannot start one. Only the bot does that, so the channel stays one post per bug.</p>
+
+    <h3 style="font-size:1.4rem;margin-top:26px">Filing it, and reporting back</h3>
+    <p>When an admin presses a File button, the bot opens a GitHub issue on that repo with a link back to the forum post, and sends the reporter a message that it has been passed along. Once an hour the bot asks GitHub whether any of its issues have closed. When one has, the reporter gets a second message saying it is fixed, or that it was closed without a change.</p>
+    <p>Not a bug works differently. The admin has to type a reason before the bot will close the report, and that reason goes to the reporter too. Nobody gets a bare "no".</p>
+
+    <p style="margin-top:22px">The guards matter more than the feature:</p>
     <ul class="rules">
       <li><b>The model suggests, a person files.</b> Same rule as approvals. An admin can press a different button than the green one.</li>
       <li><b>No guess is fine.</b> If the AI call fails or times out, the report still posts, just without a suggestion.</li>
       <li><b>The report is data, not orders.</b> The model is told to classify the text and ignore any instructions in it, and the bot only accepts one of four fixed answers back.</li>
-      <li><b>Nothing private goes to GitHub.</b> The issue carries the report and the reporter's callsign, never a Discord ID, because one of the repos is public.</li>
-      <li><b>No ping-spam.</b> The post can only ping the one admin role, and each person can send one report a minute.</li>
+      <li><b>Nothing private goes to GitHub.</b> The issue carries the report and the reporter's callsign, never a Discord ID, because one of the repos is public. The link back to the forum only opens for members.</li>
+      <li><b>The bot asks, GitHub never calls in.</b> Checking once an hour is slower than having GitHub notify the bot, but it means nothing on my network has to accept connections from outside.</li>
+      <li><b>No ping-spam.</b> The admin post can only ping the one admin role, and each person can send one report a minute.</li>
     </ul>
-    <p style="margin-top:14px">It costs a fraction of a cent per report, and it needs two more secrets next to the Discord token: an API key for the model and a GitHub token that can only create issues.</p>
+    <p style="margin-top:14px">It costs a fraction of a cent per report, and it needs two more kinds of secret next to the Discord token: an API key for the model and GitHub tokens that can only work with issues.</p>
   </div>
 </section>
 
@@ -291,6 +309,7 @@ WantedBy=multi-user.target</code></pre>
       <li>Register commands to your one server instead of globally. They show up right away, which makes testing much less confusing.</li>
       <li>Write the <code>.gitignore</code> before the first commit, not after.</li>
       <li>Make the bot tell people exactly what is wrong. A good error message is one less question for an admin.</li>
+      <li>For a forum that only the bot posts in, deny members Create Posts and allow Send Messages in Posts. They can reply to any bug but cannot start one.</li>
     </ul>
   </div>
 </section>
